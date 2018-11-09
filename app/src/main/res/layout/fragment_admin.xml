@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <FrameLayout
+        android:id="@+id/fl_home"
+        android:layout_alignParentBottom="true"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/colorWhite">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:padding="3dp"
+            android:orientation="horizontal">
+
+            <RelativeLayout
+                android:id="@+id/rl_home"
+                android:layout_weight="1"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:gravity="center">
+                <FrameLayout
+                    android:id="@+id/fl_test"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
+                    <ImageView
+                        android:id="@+id/iv_home"
+                        android:layout_width="32dp"
+                        android:layout_height="32dp"
+                        android:src="@mipmap/ic_tab_home_active"/>
+                </FrameLayout>
+                <TextView
+                    android:id="@+id/tv_onezao_home"
+                    android:layout_below="@+id/fl_test"
+                    android:text="@string/app_tab_home"
+                    android:textColor="@color/colorGreen"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/rl_status"
+                android:layout_weight="1"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:gravity="center">
+                <FrameLayout
+                    android:id="@+id/fl_test2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
+                    <ImageView
+                        android:id="@+id/iv_status"
+                        android:layout_width="32dp"
+                        android:layout_height="32dp"
+                        android:src="@mipmap/ic_tab_status_normal"/>
+                </FrameLayout>
+                <TextView
+                    android:id="@+id/tv_onezao_status"
+                    android:layout_below="@+id/fl_test2"
+                    android:text="@string/app_tab_status"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/rl_group"
+                android:layout_weight="1"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:gravity="center">
+                <FrameLayout
+                    android:id="@+id/fl_test3"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
+                    <ImageView
+                        android:id="@+id/iv_group"
+                        android:layout_width="32dp"
+                        android:layout_height="32dp"
+                        android:src="@mipmap/ic_tab_group_normal"/>
+                </FrameLayout>
+                <TextView
+                    android:id="@+id/tv_onezao_group"
+                    android:layout_below="@+id/fl_test3"
+                    android:text="@string/app_tab_group"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/rl_profile"
+                android:layout_weight="1"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:gravity="center">
+                <FrameLayout
+                    android:id="@+id/fl_test4"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
+                    <ImageView
+                        android:id="@+id/iv_profile"
+                        android:layout_width="32dp"
+                        android:layout_height="32dp"
+                        android:src="@mipmap/ic_tab_profile_normal"/>
+                </FrameLayout>
+                <TextView
+                    android:id="@+id/tv_onezao_profile"
+                    android:layout_below="@+id/fl_test4"
+                    android:text="@string/app_tab_profile"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+            </RelativeLayout>
+
+        </LinearLayout>
+    </FrameLayout>
+
+    <LinearLayout
+        android:id="@+id/fragment_onezao_0403"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
+        android:layout_above="@+id/fl_home"
+        android:orientation="vertical">
+    </LinearLayout>
+
+</RelativeLayout>
