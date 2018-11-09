@@ -45,7 +45,7 @@ public class ConstantC {
     public final static String USER_NAME = "userName";
     public final static String USER_IS_LOGIN = "userIsLogin";
     public final static String USER_ILLUSTRATION = "userIllustration";
-    public final static String USER_DEFAULT_NAME = "未登录";
+    public final static String USER_DEFAULT_NAME = "斑马";
     public final static String USER_DEFAULT_ILLUSTRATION = "这个用户很懒，什么都没留下";
 
     //登录框

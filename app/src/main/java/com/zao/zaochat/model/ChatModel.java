@@ -13,6 +13,15 @@ public class ChatModel implements Serializable {
     private String illustration = "";
     private String sex = "";
     private String time="";
+    private String sign="";
+
+    public String getSign() {
+        return sign;
+    }
+
+    public void setSign(String sign) {
+        this.sign = sign;
+    }
 
     public String getTime() {
         return time;

@@ -5,6 +5,7 @@ import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.zao.zaochat.R;
@@ -21,10 +22,11 @@ import com.zao.zaochat.model.ChatModel;
  */
 public class UserInfoDialog extends AlertDialog {
     LayoutInflater layoutInflater;
+    TextView tvId;
     TextView tvName;
     TextView tvSex;
     TextView tvIllustration;
-    CircleImageView civIcon;
+    ImageView ivIcon;
 
     View view;
     int layoutId;
@@ -35,16 +37,18 @@ public class UserInfoDialog extends AlertDialog {
         this.layoutInflater = layoutInflater;
         this.layoutId = layoutId;
         view = layoutInflater.inflate(layoutId, (ViewGroup) findViewById(layoutId));
+        tvId = (TextView) view.findViewById(R.id.tv_dialog_user_info_id);
         tvName = (TextView) view.findViewById(R.id.tv_dialog_user_info_name);
         tvSex = (TextView) view.findViewById(R.id.tv_dialog_user_info_sex);
         tvIllustration = (TextView) view.findViewById(R.id.tv_dialog_user_info_illustration);
-        civIcon= (CircleImageView) view.findViewById(R.id.civ_dialog_user_info_header);
+        ivIcon= (ImageView) view.findViewById(R.id.iv_dialog_user_info_header);
         this.chatModel=chatModel;
     }
 
 
     public void initParameterAndShow() {
 
+        tvId.setText(chatModel.getSign());
         tvName.setText(chatModel.getNick());
         switch (chatModel.getSex()){
             case "man":
@@ -60,19 +64,19 @@ public class UserInfoDialog extends AlertDialog {
         tvIllustration.setText(chatModel.getIllustration());
         switch (chatModel.getIcon()){
             case "1":
-                civIcon.setImageResource(R.drawable.header);
+                ivIcon.setImageResource(R.drawable.header);
                 break;
             case "2":
-                civIcon.setImageResource(R.drawable.header2);
+                ivIcon.setImageResource(R.drawable.header2);
                 break;
             case "3":
-                civIcon.setImageResource(R.drawable.header3);
+                ivIcon.setImageResource(R.drawable.header3);
                 break;
             case "4":
-                civIcon.setImageResource(R.drawable.header4);
+                ivIcon.setImageResource(R.drawable.header4);
                 break;
             default:
-                civIcon.setImageResource(R.drawable.header);
+                ivIcon.setImageResource(R.drawable.header);
                 break;
         }
 

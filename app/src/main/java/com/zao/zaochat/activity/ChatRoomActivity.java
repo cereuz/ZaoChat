@@ -109,7 +109,7 @@ public class ChatRoomActivity extends AppCompatActivity implements SocketServer.
      */
     private void initParameter() {
         wifiTools = WifiTools.getInstance(mContext);
-        socketUser = new SocketUser(ConstantC.USER_DEFAULT_NAME, ConstantC.USER_DEFAULT_ILLUSTRATION, "man", "1", GenerateRandom.randomW());
+        socketUser = new SocketUser(GenerateRandom.randomUSER_DEFAULT_NAME(), ConstantC.USER_DEFAULT_ILLUSTRATION, GenerateRandom.randomSex(), GenerateRandom.randomIcon(), GenerateRandom.randomW());
 
         /**
          * 获取前面Activity传过来的值
@@ -237,6 +237,7 @@ public class ChatRoomActivity extends AppCompatActivity implements SocketServer.
                     model.setIllustration(infoMsg[1]);
                     model.setSex(infoMsg[2]);
                     model.setIcon(infoMsg[3]);
+                    model.setSign(infoMsg[4]);
                     model.setTime(ZaoUtils.getSystemTimeMore(3));
                     model.setContent(rMsg);
                     data.add(new ItemModel(ItemModel.CHAT_A, model));
@@ -272,6 +273,7 @@ public class ChatRoomActivity extends AppCompatActivity implements SocketServer.
                     model.setNick(socketUser.getUserName());
                     model.setIllustration(socketUser.getUserIllustration());
                     model.setSex(socketUser.getIsMan());
+                    model.setSign(socketUser.getSign() + "");
                     model.setTime(ZaoUtils.getSystemTimeMore(3));
                     model.setContent(rMsg);
                     data.add(new ItemModel(ItemModel.CHAT_B, model));
@@ -319,11 +321,13 @@ public class ChatRoomActivity extends AppCompatActivity implements SocketServer.
                                 String[] infoMsg = msg.substring(MessageType.ID_LEN).split("/");
                                 String rMsg = infoMsg[5];
                                 LogUtil.i( "消息内容为" + rMsg);
+                                LogUtil.e("CLIENT_MESSAGE_SIGN : " + infoMsg[0] + infoMsg[1] + infoMsg[2] + infoMsg[3] + infoMsg[4] + infoMsg[5] );
 
                                 model.setNick(infoMsg[0]);
                                 model.setIllustration(infoMsg[1]);
                                 model.setSex(infoMsg[2]);
                                 model.setIcon(infoMsg[3]);
+                                model.setSign(infoMsg[4]);
                                 model.setContent(rMsg);
                                 model.setTime(ZaoUtils.getSystemTimeMore(3));
                                 data.add(new ItemModel(ItemModel.CHAT_A, model));
@@ -346,11 +350,12 @@ public class ChatRoomActivity extends AppCompatActivity implements SocketServer.
                             String[] infoMsg = msg.substring(MessageType.MS_LEN).split("/");
                             String rMsg = infoMsg[5];
                             LogUtil.i( "消息内容为" + rMsg);
-
+                            LogUtil.e("CLIENT_SIGN : " + infoMsg[0] + infoMsg[1] + infoMsg[2] + infoMsg[3] + infoMsg[4] + infoMsg[5] );
                             model.setNick(infoMsg[0]);
                             model.setIllustration(infoMsg[1]);
                             model.setSex(infoMsg[2]);
                             model.setIcon(infoMsg[3]);
+                            model.setSign(infoMsg[4]);
                             model.setTime(ZaoUtils.getSystemTimeMore(3));
                             model.setContent(rMsg);
                             data.add(new ItemModel(ItemModel.CHAT_A, model));
@@ -382,6 +387,7 @@ public class ChatRoomActivity extends AppCompatActivity implements SocketServer.
                                 model.setIllustration(infoMsg[1]);
                                 model.setSex(infoMsg[2]);
                                 model.setIcon(infoMsg[3]);
+                                model.setSign(infoMsg[4]);
                                 model.setTime(ZaoUtils.getSystemTimeMore(3));
                                 model.setContent(rMsg);
                                 data.add(new ItemModel(ItemModel.CHAT_A, model));
@@ -428,6 +434,7 @@ public class ChatRoomActivity extends AppCompatActivity implements SocketServer.
                     model.setNick(socketUser.getUserName());
                     model.setIllustration(socketUser.getUserIllustration());
                     model.setSex(socketUser.getIsMan());
+                    model.setSign(socketUser.getSign() + "");
                     model.setTime(ZaoUtils.getSystemTimeMore(3));
                     model.setContent(rMsg);
 

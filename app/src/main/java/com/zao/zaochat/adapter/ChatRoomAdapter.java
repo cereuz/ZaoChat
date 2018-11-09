@@ -11,6 +11,7 @@ import android.widget.TextView;
 import com.zao.zaochat.R;
 import com.zao.zaochat.model.ChatModel;
 import com.zao.zaochat.model.ItemModel;
+import com.zao.zaochat.utils.LogUtil;
 
 import java.util.ArrayList;
 
@@ -123,13 +124,13 @@ public class ChatRoomAdapter extends RecyclerView.Adapter<ChatRoomAdapter.BaseAd
             civIcon.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Log.i(TAG, model.getNick() + "--" + model.getIllustration() + "--" + model.getSex() + "--" + model.getIcon());
+                    LogUtil.e(model.getNick() + "--" + model.getIllustration() + "--" + model.getSex() + "--" + model.getIcon() + "--" + model.getSign());
                     listener.onIconClick(model);
                 }
             });
 
             tvContent.setText(model.getContent());
-            tvName.setText(model.getNick());
+            tvName.setText(model.getNick() + "(" + model.getSign() + ")");
             switch (model.getSex()) {
                 case "man":
                     ivSex.setImageResource(R.drawable.man);
@@ -164,7 +165,7 @@ public class ChatRoomAdapter extends RecyclerView.Adapter<ChatRoomAdapter.BaseAd
         @Override
         void setData(Object object) {
             super.setData(object);
-            ChatModel model = (ChatModel) object;
+            final ChatModel model = (ChatModel) object;
 //            Picasso.with(itemView.getContext()).load(model.getIcon()).placeholder(R.mipmap.ic_launcher).into(ic_user);
             switch (model.getIcon()) {
                 case "1":
@@ -186,12 +187,12 @@ public class ChatRoomAdapter extends RecyclerView.Adapter<ChatRoomAdapter.BaseAd
             civIcon.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-
+                    listener.onIconClick(model);
                 }
             });
 
             tvContent.setText(model.getContent());
-            tvName.setText(model.getNick());
+            tvName.setText(model.getNick()  + "(" + model.getSign() + ")");
             switch (model.getSex()) {
                 case "man":
                     ivSex.setImageResource(R.drawable.man);
