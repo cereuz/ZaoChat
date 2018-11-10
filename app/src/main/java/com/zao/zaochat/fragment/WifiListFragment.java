@@ -107,7 +107,6 @@ public class WifiListFragment extends Fragment implements View.OnClickListener {
             switch (msg.what) {
 
                 //wifi列表刷新处理
-
                 case ConstantC.WIFI_LIST_REFRESHED:
                         int size = scanResultWithLocks.size();
                         Log.i(TAG, "主线程中获取到扫描结果大小：" + size);
@@ -127,11 +126,14 @@ public class WifiListFragment extends Fragment implements View.OnClickListener {
                         WifiListFragmentAdapter.notifyDataSetChanged();
                         srlWifiList.setRefreshing(false);
                     break;
+                //打开wifi ， 刷新页面数据
+                case ConstantC.WIFI_LIST_OPEN_REFRESHED:
+                    new RefreshWifiList().start();
+                    break;
                 //wifi连接失败
                 case ConstantC.WIFI_CONNECT_FAILED:
                     connectingDialog.dismiss();
                     ToastUtil.showT(getActivity(), "进入聊天室失败，请确认密码是否正确！");
-
                     break;
                 default:
                     break;
@@ -150,6 +152,15 @@ public class WifiListFragment extends Fragment implements View.OnClickListener {
 
         wifiTools = WifiTools.getInstance(getActivity());
         context = getActivity();
+
+        if(wifiTools.isConnectedSign()){
+            new RefreshWifiList().start();
+        } else {
+            wifiTools.openWifi();
+//            wifiTools.openWifi2(mContext);
+            listHandler.sendEmptyMessageDelayed(ConstantC.WIFI_LIST_OPEN_REFRESHED,ConstantC.SIX_SENCOND);
+        }
+
         wifiReceiver = new WifiReceiver();
         wifiReceiver.setOnWifiChangedListener(new WifiReceiver.OnWifiChangedListener() {
             @Override
@@ -248,7 +259,7 @@ public class WifiListFragment extends Fragment implements View.OnClickListener {
                                             sendMsgToHandler();
 
                                         } else {
-                                            Log.i(TAG, "从来没有连过这个聊天室");
+                                            Log.e(TAG, "从来没有连过这个聊天室 ：" + scanResultWithLocks.toString() + "\n==" + SSID + "==" + passWord);
                                             int netId = wifiTools.AddWifiConfig(scanResultWithLocks, SSID, passWord);
                                             if (netId != -1) {
                                                 Log.i(TAG, "创建配置信息成功");
@@ -275,44 +286,6 @@ public class WifiListFragment extends Fragment implements View.OnClickListener {
                                         startActivity(intent);
                                         connectingDialog.dismiss();
                                     }
-
-/*                                        if (!isLocked) {
-                                            Log.i(TAG, "该聊天室没有密码");
-                                            wifiTools.connectWifi(SSID, "", WifiTools.WIFICIPHER_NOPASS);
-
-                                            sendMsgToHandler();
-
-                                        } else {
-                                            Log.i(TAG, "从来没有连过这个聊天室");
-                                            int netId = wifiTools.AddWifiConfig(scanResultWithLocks, SSID, passWord);
-                                            if (netId != -1) {
-                                                Log.i(TAG, "创建配置信息成功");
-                                                wifiTools.getConfiguration();//添加了配置信息，要重新得到配置信息
-                                                wifiTools.connectWifi(netId);
-
-                                                sendMsgToHandler();
-
-                                            } else {
-                                                Message msg = new Message();
-                                                msg.what = ConstantC.WIFI_CONNECT_FAILED;
-                                                listHandler.sendMessage(msg);
-                                            }
-                                        }
-                                    }
-
-                                    *//**
-                                     * 发送消息通知聊天界面，通知有一个客户端连接成功。
-                                     *//*
-                                    private void sendMsgToHandler() {
-                                        System.out.println(wifiTools.getConnectedHotIP());
-                                        AdminActivity adminActivity = (AdminActivity) getActivity();
-
-                                        Message message = new Message();
-                                        message.what = ConstantC.CLIENT_PREPARE;
-                                        adminActivity.getMainHandler().sendMessage(message);
-                                        connectingDialog.dismiss();
-                                    }*/
-
                                 }.start();
                             } else {
                                 ToastUtil.showT(getActivity(), ConstantC.USER_OFF_TIPS);

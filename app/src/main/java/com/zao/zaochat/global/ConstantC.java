@@ -1,5 +1,7 @@
 package com.zao.zaochat.global;
 
+import android.os.Environment;
+
 /**
  * 项目名称：HotChat2
  * 类描述：
@@ -11,6 +13,7 @@ package com.zao.zaochat.global;
  */
 public class ConstantC {
 
+    public final static int WIFI_LIST_OPEN_REFRESHED = 12344;
     public final static int WIFI_LIST_REFRESHED = 12345;
     public final static int WIFI_LIST_INIT = 12346;
 
@@ -69,4 +72,8 @@ public class ConstantC {
      * 六秒钟
      */
     public static final long SIX_SENCOND = 6000;
+    /**
+     * 接收的文件保存的路径
+     */
+    public static final String ZAO_CHAT_PATH = Environment.getExternalStorageDirectory().getAbsolutePath() + "/" + "ZaoChat" + "/";
 }

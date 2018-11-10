@@ -1,9 +1,14 @@
 package com.zao.zaochat.admin;
 
+import android.content.ActivityNotFoundException;
+import android.content.Intent;
+import android.net.Uri;
+import android.os.Build;
 import android.support.v4.app.FragmentManager;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.NavigationView;
+import android.support.v4.content.FileProvider;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -27,6 +32,8 @@ import com.zao.zaochat.myapp.BaseActivity;
 import com.zao.zaochat.object.SocketUser;
 import com.zao.zaochat.utils.LogUtil;
 import com.zao.zaochat.widget.CreatingDialog;
+
+import java.io.File;
 
 public class AdminActivity extends BaseActivity
         implements NavigationView.OnNavigationItemSelectedListener,View.OnClickListener {
@@ -212,6 +219,7 @@ public class AdminActivity extends BaseActivity
                 break;
             case R.id.nav_slideshow :
                 LogUtil.e("点击了nav_slideshow");
+                showFile();
                 break;
             case R.id.nav_manage :
                 LogUtil.i("点击了nav_manage");
@@ -228,6 +236,37 @@ public class AdminActivity extends BaseActivity
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
+
+    /**
+     * 显示收到的文件
+     */
+    private void showFile() {
+            File file = new File(ConstantC.ZAO_CHAT_PATH);
+
+
+            if(null==file || !file.exists()){
+                LogUtil.i("没有接收到任何文件。");
+                return;
+            }
+            Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+            intent.addCategory(Intent.CATEGORY_OPENABLE);
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            Uri data;
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                data = FileProvider.getUriForFile(this, "com.zao.zaochat.fileprovider", file);
+            } else {
+                data = Uri.fromFile(file);
+            }
+            LogUtil.e(data.toString());
+            intent.setDataAndType(data, "*/*");
+//            intent.setDataAndType(Uri.fromFile(file), "file/*");
+            try {
+                startActivity(intent);
+//            startActivity(Intent.createChooser(intent,"选择浏览工具"));
+            } catch (ActivityNotFoundException e) {
+                e.printStackTrace();
+            }
+        }
 
     /**
      * 监听并控制返回按钮的点击事件

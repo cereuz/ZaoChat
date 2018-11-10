@@ -1,27 +1,38 @@
 package com.zao.zaochat.WifiTool;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.res.Configuration;
 import android.location.LocationManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.net.Uri;
 import android.net.wifi.ScanResult;
 import android.net.wifi.WifiConfiguration;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.os.AsyncTask;
+import android.os.Build;
+import android.os.ResultReceiver;
+import android.provider.Settings;
 import android.telephony.TelephonyManager;
 import android.util.Log;
 
 
 import com.zao.zaochat.object.ScanResultWithLock;
+import com.zao.zaochat.utils.LogUtil;
+import com.zao.zaochat.utils.ToastUtil;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
+import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.security.Security;
 import java.util.ArrayList;
 import java.util.List;
+
+import static android.net.wifi.WifiConfiguration.Protocol.WPA;
 
 
 /**
@@ -175,7 +186,7 @@ public class WifiTools {
 
                     wifiConfiguration.allowedAuthAlgorithms.set(WifiConfiguration.AuthAlgorithm.OPEN);
                     wifiConfiguration.allowedProtocols.set(WifiConfiguration.Protocol.RSN);
-                    wifiConfiguration.allowedProtocols.set(WifiConfiguration.Protocol.WPA);
+                    wifiConfiguration.allowedProtocols.set(WPA);
                     wifiConfiguration.allowedPairwiseCiphers.set(WifiConfiguration.PairwiseCipher.CCMP);
                     wifiConfiguration.allowedPairwiseCiphers.set(WifiConfiguration.PairwiseCipher.TKIP);
                     wifiConfiguration.allowedGroupCiphers.set(WifiConfiguration.GroupCipher.CCMP);
@@ -227,7 +238,7 @@ public class WifiTools {
                     wifiConfiguration.allowedPairwiseCiphers.set(WifiConfiguration.PairwiseCipher.CCMP);
                     wifiConfiguration.allowedPairwiseCiphers.set(WifiConfiguration.PairwiseCipher.NONE);
 
-                    wifiConfiguration.allowedProtocols.set(WifiConfiguration.Protocol.WPA);
+                    wifiConfiguration.allowedProtocols.set(WPA);
                     // 必须添加，否则无线路由无法连接
                     wifiConfiguration.allowedProtocols.set(WifiConfiguration.Protocol.RSN);
 
@@ -347,15 +358,15 @@ public class WifiTools {
     public int AddWifiConfig(List<ScanResultWithLock> wifiList, String ssid, String pwd) {
         int wifiId = -1;
         for (int i = 0; i < wifiList.size(); i++) {
-            ScanResult wifi = wifiList.get(i).getScanResult();
-            if (wifi.SSID.equals(ssid)) {
-//                Log.i("AddWifiConfig","equals");
+            ScanResult scanResult = wifiList.get(i).getScanResult();
+            if (scanResult.SSID.equals(ssid)) {
                 WifiConfiguration wifiCong = new WifiConfiguration();
-                wifiCong.SSID = "\"" + wifi.SSID + "\"";//\"转义字符，代表"
+                wifiCong.SSID = "\"" + scanResult.SSID + "\"";//\"转义字符，代表"
                 wifiCong.preSharedKey = "\"" + pwd + "\"";//WPA-PSK密码
                 wifiCong.hiddenSSID = false;
                 wifiCong.status = WifiConfiguration.Status.ENABLED;
                 wifiId = wifiManager.addNetwork(wifiCong);//将配置好的特定WIFI密码信息添加,添加完成后默认是不激活状态，成功返回ID，否则为-1
+                LogUtil.e(wifiId + "=" + wifiCong.toString() );
                 if (wifiId != -1) {
                     return wifiId;
                 }
@@ -363,6 +374,120 @@ public class WifiTools {
         }
         return wifiId;
     }
+
+
+    //添加指定WIFI的配置信息,原列表不存在此SSID
+    public int AddWifiConfig2(List<ScanResultWithLock> wifiList, String ssid, String pwd) {
+        int wifiId = -1;
+        for (int i = 0; i < wifiList.size(); i++) {
+            ScanResult scanResult = wifiList.get(i).getScanResult();
+            if (scanResult.SSID.equals(ssid)) {
+                WifiConfiguration config = new WifiConfiguration();
+
+                config.hiddenSSID = false;
+                config.SSID=scanResult.SSID;
+                config.status = WifiConfiguration.Status.ENABLED;
+		/*if (scan.capabilities.contains("WEP")) {
+			config.allowedKeyManagement.set(WifiConfiguration.KeyMgmt.NONE);
+			config.allowedAuthAlgorithms.set(WifiConfiguration.AuthAlgorithm.OPEN);
+			config.allowedGroupCiphers.set(WifiConfiguration.GroupCipher.WEP104);
+			config.SSID = "\"" + scan.SSID + "\"";
+			config.wepTxKeyIndex = 0;
+			config.wepKeys[0] = Password;
+		} else */if (scanResult.capabilities.contains("WPA")) {
+                    LogUtil.e( "WPA ==" + scanResult.capabilities);
+                    config.allowedProtocols.set(WifiConfiguration.Protocol.RSN);
+                    config.allowedProtocols.set(WifiConfiguration.Protocol.WPA);
+                    config.allowedKeyManagement.set(WifiConfiguration.KeyMgmt.WPA_PSK);
+                    config.allowedPairwiseCiphers.set(WifiConfiguration.PairwiseCipher.CCMP);
+                    config.allowedPairwiseCiphers.set(WifiConfiguration.PairwiseCipher.TKIP);
+                    config.allowedGroupCiphers.set(WifiConfiguration.GroupCipher.WEP40);
+                    config.allowedGroupCiphers.set(WifiConfiguration.GroupCipher.WEP104);
+                    config.allowedGroupCiphers.set(WifiConfiguration.GroupCipher.CCMP);
+                    config.allowedGroupCiphers.set(WifiConfiguration.GroupCipher.TKIP);
+                    config.preSharedKey = "\"".concat(pwd).concat("\"");
+//			config.SSID = "\"" + scan.SSID + "\"";
+
+//			config.preSharedKey = "\"" + Password + "\"";
+                } else if (scanResult.capabilities.contains("WEP")) {
+                    LogUtil.e( "WEP" + scanResult.capabilities);
+                    config.allowedKeyManagement.set(WifiConfiguration.KeyMgmt.NONE);
+                    config.allowedProtocols.set(WifiConfiguration.Protocol.RSN);
+                    config.allowedProtocols.set(WifiConfiguration.Protocol.WPA);
+                    config.allowedAuthAlgorithms.set(WifiConfiguration.AuthAlgorithm.OPEN);
+                    config.allowedAuthAlgorithms.set(WifiConfiguration.AuthAlgorithm.SHARED);
+                    config.allowedPairwiseCiphers.set(WifiConfiguration.PairwiseCipher.CCMP);
+                    config.allowedPairwiseCiphers.set(WifiConfiguration.PairwiseCipher.TKIP);
+                    config.allowedGroupCiphers.set(WifiConfiguration.GroupCipher.WEP40);
+                    config.allowedGroupCiphers.set(WifiConfiguration.GroupCipher.WEP104);
+
+                    if (getHexKey(pwd)) config.wepKeys[0] = pwd;
+                    else config.wepKeys[0] = "\"".concat(pwd).concat("\"");
+                    config.wepTxKeyIndex = 0;
+
+//			config.allowedKeyManagement.set(WifiConfiguration.KeyMgmt.WPA_EAP);
+//			config.allowedAuthAlgorithms.set(WifiConfiguration.AuthAlgorithm.OPEN);
+//			config.allowedPairwiseCiphers.set(WifiConfiguration.PairwiseCipher.TKIP);
+//			config.allowedProtocols.set(WifiConfiguration.Protocol.WPA);
+//			config.SSID = "\"" + scan.SSID + "\"";
+//			config.preSharedKey = "\"" + Password + "\"";
+                } else {
+//			config.allowedKeyManagement.set(WifiConfiguration.KeyMgmt.NONE);
+//			config.SSID = "\"" + scan.SSID + "\"";
+                    LogUtil.e( "OTHERS" + scanResult.capabilities);
+                    config.preSharedKey = null;
+                    config.wepKeys[0] = "\"" + "\"";
+                    config.wepTxKeyIndex = 0;
+                    config.allowedKeyManagement.set(WifiConfiguration.KeyMgmt.NONE);
+                    config.allowedProtocols.set(WifiConfiguration.Protocol.RSN);
+                    config.allowedProtocols.set(WifiConfiguration.Protocol.WPA);
+                    config.allowedAuthAlgorithms.clear();
+                    config.allowedPairwiseCiphers.set(WifiConfiguration.PairwiseCipher.CCMP);
+                    config.allowedPairwiseCiphers.set(WifiConfiguration.PairwiseCipher.TKIP);
+                    config.allowedGroupCiphers.set(WifiConfiguration.GroupCipher.WEP40);
+                    config.allowedGroupCiphers.set(WifiConfiguration.GroupCipher.WEP104);
+                    config.allowedGroupCiphers.set(WifiConfiguration.GroupCipher.CCMP);
+                    config.allowedGroupCiphers.set(WifiConfiguration.GroupCipher.TKIP);
+                }
+                wifiId = wifiManager.addNetwork(config);//将配置好的特定WIFI密码信息添加,添加完成后默认是不激活状态，成功返回ID，否则为-1
+                LogUtil.e(wifiId + "=" + config.toString() );
+                if (wifiId != -1) {
+                    return wifiId;
+                }
+            }
+        }
+        return wifiId;
+    }
+
+
+    /**
+     * WEP has two kinds of password, a hex value that specifies the key or
+     * a character string used to generate the real hex. This checks what kind of
+     * password has been supplied. The checks correspond to WEP40, WEP104 & WEP232
+     * @param s
+     * @return
+     */
+    private boolean getHexKey(String s) {
+        if (s == null) {
+            return false;
+        }
+
+        int len = s.length();
+        if (len != 10 && len != 26 && len != 58) {
+            return false;
+        }
+
+        for (int i = 0; i < len; ++i) {
+            char c = s.charAt(i);
+            if ((c >= '0' && c <= '9') || (c >= 'a' && c <= 'f') || (c >= 'A' && c <= 'F')) {
+                continue;
+            }
+            return false;
+        }
+        return true;
+    }
+
+
 
     //连接指定Id的WIFI
     public boolean connectWifi(int wifiId) {
@@ -392,6 +517,45 @@ public class WifiTools {
         }
         return false;
     }
+
+    public boolean openWifi2(Context context) {
+        if(wifiManager.isWifiEnabled()){
+            wifiManager.setWifiEnabled(false);
+            return false;
+        }
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            Log.d("MainActivity","Android 8.0及以上");
+            if(!Settings.System.canWrite(context)){
+                Intent intent = new Intent(Settings.ACTION_MANAGE_WRITE_SETTINGS, Uri.parse("package:" + context.getPackageName()));
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                context.startActivity(intent);
+            }
+            else{
+                setWifiApEnabledForAndroid_O(context);
+            }
+            return false;
+        }
+        Log.d("MainActivity","Android 8.0及以下");
+        return openWifi();
+    }
+
+
+    public void setWifiApEnabledForAndroid_O(Context context){
+        ConnectivityManager connManager = (ConnectivityManager)context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        Field iConnMgrField;
+        try{
+            iConnMgrField = connManager.getClass().getDeclaredField("mService");
+            iConnMgrField.setAccessible(true);
+            Object iConnMgr = iConnMgrField.get(connManager);
+            Class<?> iConnMgrClass = Class.forName(iConnMgr.getClass().getName());
+            Method startTethering = iConnMgrClass.getMethod("startTethering",int.class,ResultReceiver.class,boolean.class);
+            startTethering.invoke(iConnMgr,0,null,true);
+            ToastUtil.showT(context,"热点打开成功");
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+
 
     /**
      * 关闭 wifi

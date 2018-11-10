@@ -39,8 +39,12 @@ public class BaseActivity extends AppCompatActivity {
             Manifest.permission.READ_CONTACTS,
             Manifest.permission.WRITE_CONTACTS,*/
             Manifest.permission.ACCESS_FINE_LOCATION,
+            Manifest.permission.ACCESS_NETWORK_STATE,
             Manifest.permission.CHANGE_NETWORK_STATE,
-            Manifest.permission.READ_EXTERNAL_STORAGE
+            Manifest.permission.ACCESS_WIFI_STATE,
+            Manifest.permission.CHANGE_WIFI_STATE,
+            Manifest.permission.READ_EXTERNAL_STORAGE,
+            Manifest.permission.WRITE_EXTERNAL_STORAGE
     };
 
     public void onCreate(Bundle savedInstanceState) {

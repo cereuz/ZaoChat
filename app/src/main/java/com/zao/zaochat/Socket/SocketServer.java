@@ -477,7 +477,8 @@ public class SocketServer {
         int passedlen = 0;
         long long_len = 0;
 
-        String savePath = Environment.getExternalStorageDirectory().getPath() + "/HotChatFiles/";
+//        String savePath = Environment.getExternalStorageDirectory().getPath() + "/ZaoChatFiles/";
+        String savePath = ConstantC.ZAO_CHAT_PATH;
         File fileDir = new File(savePath);
         if (!fileDir.exists()) {
             Log.i(TAG, "文件夹不存在，创建新文件夹");

@@ -3,6 +3,7 @@ package com.zao.zaochat.Socket;
 import android.os.Environment;
 import android.util.Log;
 
+import com.zao.zaochat.global.ConstantC;
 import com.zao.zaochat.global.MessageType;
 import com.zao.zaochat.object.SocketUser;
 
@@ -235,7 +236,8 @@ public class SocketClient {
         int passedlen = 0;
         long long_len = 0;
 
-        String savePath = Environment.getExternalStorageDirectory().getPath() + "/HotChatFiles/";
+//        String savePath = Environment.getExternalStorageDirectory().getPath() + "/ZaoChatFiles/";
+        String savePath = ConstantC.ZAO_CHAT_PATH;
         File fileDir = new File(savePath);
         if (!fileDir.exists()) {
             Log.i(TAG, "文件夹不存在，创建新文件夹");
