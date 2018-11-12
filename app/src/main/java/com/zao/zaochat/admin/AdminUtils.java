@@ -7,6 +7,7 @@ import android.os.Build;
 import android.view.MenuItem;
 import com.zao.zaochat.R;
 import com.zao.zaochat.activity.CreateRoomActivity;
+import com.zao.zaochat.activity.FileActivity;
 import com.zao.zaochat.utils.LogUtil;
 import com.zao.zaochat.utils.ToastUtil;
 
@@ -20,11 +21,16 @@ public class AdminUtils {
         if (id == R.id.action_create) {
             LogUtil.i("发起聊天室。。。");
             if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
-                ToastUtil.showT(context,"Android 8.0 以上暂时不支持创建聊天室！");
+                ToastUtil.showT(context,"Android 8.0以上暂时不支持创建聊天室！");
             } else {
                 Intent  intent  =  new Intent(context,CreateRoomActivity.class);
                 context.startActivity(intent);
             }
+            return true;
+        } else  if (id == R.id.action_file) {
+            LogUtil.i("接收到的文件。。。");
+ 			Intent  intent  =  new Intent(context,FileActivity.class);
+ 			context.startActivity(intent);
             return true;
         } else  if (id == R.id.action_query) {
             LogUtil.i("查询。。。");

@@ -39,7 +39,6 @@ import com.zao.zaochat.WifiTool.WifiReceiver;
 import com.zao.zaochat.WifiTool.WifiTools;
 import com.zao.zaochat.activity.ChatRoomActivity;
 import com.zao.zaochat.adapter.WifiListFragmentAdapter;
-import com.zao.zaochat.admin.AdminActivity;
 import com.zao.zaochat.global.ConstantC;
 import com.zao.zaochat.object.ScanResultWithLock;
 import com.zao.zaochat.utils.LogUtil;
@@ -97,11 +96,11 @@ public class WifiListFragment extends Fragment implements View.OnClickListener {
         return view;
     }
 
-    public Handler getListHandler() {
-        return listHandler;
+    public Handler getmHandler() {
+        return mHandler;
     }
 
-    private Handler listHandler = new Handler() {
+    private Handler mHandler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
             switch (msg.what) {
@@ -158,7 +157,7 @@ public class WifiListFragment extends Fragment implements View.OnClickListener {
         } else {
             wifiTools.openWifi();
 //            wifiTools.openWifi2(mContext);
-            listHandler.sendEmptyMessageDelayed(ConstantC.WIFI_LIST_OPEN_REFRESHED,ConstantC.SIX_SENCOND);
+            mHandler.sendEmptyMessageDelayed(ConstantC.WIFI_LIST_OPEN_REFRESHED,ConstantC.SIX_SENCOND);
         }
 
         wifiReceiver = new WifiReceiver();
@@ -271,7 +270,7 @@ public class WifiListFragment extends Fragment implements View.OnClickListener {
                                             } else {
                                                 Message msg = new Message();
                                                 msg.what = ConstantC.WIFI_CONNECT_FAILED;
-                                                listHandler.sendMessage(msg);
+                                                mHandler.sendMessage(msg);
                                             }
                                         }
                                     }
@@ -387,7 +386,7 @@ public class WifiListFragment extends Fragment implements View.OnClickListener {
 
                 Message msg = new Message();
                 msg.what = ConstantC.WIFI_LIST_REFRESHED;
-                listHandler.sendMessage(msg);
+                mHandler.sendMessage(msg);
 
 
             } catch (Exception e) {

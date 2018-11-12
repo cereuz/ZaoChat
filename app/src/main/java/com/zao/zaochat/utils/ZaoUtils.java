@@ -164,6 +164,38 @@ public class ZaoUtils {
         return str;
     }
 
+    //时间转换
+    public static String  tranTime(int i,String time) {
+        SimpleDateFormat formatter = null;
+        Date curDate = new Date(Long.valueOf(time));//获取当前时间
+        switch (i) {
+            case 1:
+                formatter = new SimpleDateFormat("HH:mm:ss",Locale.ENGLISH);
+                break;
+            case 2:
+                formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                break;
+        }
+        String str = formatter.format(curDate);
+        return str;
+    }
+
+    //时间转换
+    public static String  tranTime(int i,Date date) {
+        SimpleDateFormat formatter = null;
+//        Date curDate = new Date(Long.valueOf(time));//获取当前时间
+        switch (i) {
+            case 1:
+                formatter = new SimpleDateFormat("HH:mm:ss",Locale.ENGLISH);
+                break;
+            case 2:
+                formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                break;
+        }
+        String str = formatter.format(date);
+        return str;
+    }
+
     /**
      * 调用此方法输入所要转换的时间戳输入例如（1402733340）输出（"2014年06月14日16时09分00秒"）
      * SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");

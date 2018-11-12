@@ -7,6 +7,7 @@
     <string name="app_tab_profile">我的</string>
 
     <string name="action_create">发起</string>
+    <string name="action_file">文件</string>
     <string name="action_create_room">发起聊天室</string>
     <string name="action_diary">日记</string>
     <string name="action_query">查询</string>

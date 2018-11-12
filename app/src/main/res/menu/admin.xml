@@ -19,6 +19,12 @@
         android:title="@string/action_create"/>
 
     <item
+        android:id="@+id/action_file"
+        android:orderInCategory="100"
+        app:showAsAction="never"
+        android:title="@string/action_file"/>
+
+    <item
         android:id="@+id/action_diary"
         android:orderInCategory="100"
         app:showAsAction="never"

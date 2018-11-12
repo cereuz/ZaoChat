@@ -2,17 +2,30 @@ package com.zao.zaochat.utils;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
 import android.media.MediaMetadataRetriever;
 import android.media.ThumbnailUtils;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.text.format.Formatter;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.zao.zaochat.R;
+import com.zao.zaochat.model.FileBean;
+
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Date;
 
 public class FileUtils {
 
+    public static String rootDir = Environment.getExternalStorageDirectory().getAbsolutePath() + "/" + "ame" + "/";
+    public static String rootDir2 = Environment.getExternalStorageDirectory().getAbsolutePath() + "/" + "Unicom" + "/";
     /**
      * FileProvider的  FILE_PROVIDER_AUTHORITIES
      */
@@ -27,7 +40,6 @@ public class FileUtils {
     public static Bitmap getVideoThumb(String path) {
         MediaMetadataRetriever media = new MediaMetadataRetriever();
         media.setDataSource(path);
-
         return media.getFrameAtTime();
     }
 
@@ -48,13 +60,62 @@ public class FileUtils {
 
 
     /**
+     *  手动以指定的宽高获取
+     *     作者：tablle
+     *     缺点：比较耗时
+     *     原文：https://blog.csdn.net/tablle/article/details/51698884
+     * @param imagePath
+     * @param width
+     * @param height
+     */
+    public static Bitmap getImageThumbnail(String imagePath,int width,int height) {
+        BitmapFactory.Options options = new BitmapFactory.Options();
+        Bitmap img_bitmap = null;
+        //节约内存
+        options.inPreferredConfig = Bitmap.Config.ARGB_4444;/*设置让解码器以最佳方式解码*/
+        options.inPurgeable = true;
+        options.inInputShareable = true;
+        options.inJustDecodeBounds = true;
+        //If diTher is true, the decoder will attempt to dither the decoded image
+        options.inDither = false;//不进行图片抖动处理
+        // 获取这个图片的宽和高，注意此处的bitmap为null
+        img_bitmap = BitmapFactory.decodeFile(imagePath, options);
+        options.inJustDecodeBounds = false;//设为 false
+
+        //计算缩放比
+        int h = options.outHeight;
+        int w = options.outWidth;
+        int beWidth = w / width;
+        int beHeight = h / height;
+        int be = 1;
+        if (beWidth < beHeight) {
+            be = beWidth;
+        } else {
+            be = beHeight;
+        }
+        if (be <= 0) {
+            be = 1;
+        }
+        options.inSampleSize = be;
+        // 重新读入图片，读取缩放后的bitmap，注意这次要把options.inJustDecodeBounds 设为 false
+        img_bitmap = BitmapFactory.decodeFile(imagePath, options);
+        // 利用ThumbnailUtils来创建缩略图，这里要指定要缩放哪个Bitmap对象
+
+        img_bitmap = ThumbnailUtils.extractThumbnail(img_bitmap, width, height,
+                ThumbnailUtils.OPTIONS_RECYCLE_INPUT);
+
+        return img_bitmap;
+    }
+
+
+
+    /**
      * 获取保存文件的文件夹
      * @return
      */
     public static String getSaveDirectory(Context context) {
         if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
-            String rootDir = Environment.getExternalStorageDirectory().getAbsolutePath() + "/" + "Zneo" + "/";
-
+//            String rootDir = Environment.getExternalStorageDirectory().getAbsolutePath() + "/" + "ame" + "/";
             File file = new File(rootDir);
             if (!file.exists()) {
                 if (!file.mkdirs()) {
@@ -176,5 +237,115 @@ public class FileUtils {
             Toast.makeText(context, "删除目录：" + filePath + "失败！", Toast.LENGTH_SHORT).show();
             return false;
         }
+    }
+
+
+    /**
+     * 获取当前目录下所有的文件
+     * @param context
+     * @param fileAbsolutePath
+     * @return
+     */
+    public static ArrayList<FileBean> GetFileAttr(Context context, String fileAbsolutePath) {
+        ArrayList<FileBean> list = new ArrayList<FileBean>();
+        File file = new File(fileAbsolutePath);
+        File[] subFile = file.listFiles();
+
+        for (int iFileLength = 0; iFileLength < subFile.length; iFileLength++) {
+            // 判断是否为文件夹
+            if (!subFile[iFileLength].isDirectory()) {
+                FileBean fileBean = new FileBean();
+                String filename = subFile[iFileLength].getName();
+                String path = subFile[iFileLength].getAbsolutePath();
+                String space = Formatter.formatFileSize(context,getFileSize(path));
+                long date = subFile[iFileLength].lastModified();//文件最后修改时间
+//                Bitmap bitmap = getVideoThumb(path);
+                Bitmap bitmap = getFileBitmap(context,path);
+                LogUtil.e("文件名称 ：" + filename + "\n" + "文件路径 ：" + path + "\n" + "最后修改时间 ：" + ZaoUtils.tranTime(2,new Date(date)) + "\n" + "文件大小 ：" + space + "\n" + "Bitmap : " + bitmap);
+
+                fileBean.setFilename(filename);
+                fileBean.setPath(path);
+                fileBean.setSize(space);
+                fileBean.setDate(date);
+                fileBean.setBitmap(bitmap);
+/*                Bitmap bitmap2 = BitmapFactory.decodeResource(context.getResources(), R.mipmap.ic_launcher);
+                fileBean.setBitmap(bitmap2);*/
+                list.add(fileBean);
+/*                // 判断是否为MP4结尾
+                if (filename.trim().toLowerCase().endsWith(".mp4")) {
+                    list.add(fileBean);
+                }*/
+            }
+        }
+        return list;
+    }
+
+    /**
+     * 获取 指定路径下文件的  bitmap
+     * @return
+     */
+    private static Bitmap getFileBitmap(Context context,String filePath) {
+        String path = filePath.toLowerCase();
+        if(path.endsWith(".jpg") || filePath.endsWith(".gif") || filePath.endsWith(".bmp") ){
+            return getImageThumbnail(filePath,40,40);
+        } else if (path.endsWith(".mp4") || path.endsWith(".rmvb") || path.endsWith(".avi") || path.endsWith(".mkv")) {
+            return getVideoThumb(filePath);
+        } else if (path.endsWith(".mp3") || path.endsWith(".wma") || path.endsWith(".flac") || path.endsWith(".aac") || path.endsWith(".ogg") || path.endsWith(".amr")) {
+            return BitmapFactory.decodeResource(context.getResources(), R.drawable.icon_music);
+        } else {
+            return BitmapFactory.decodeResource(context.getResources(), R.drawable.icon_file);
+        }
+    }
+
+
+    /**
+     * 获取指定文件大小
+     * @param f
+     * @return
+     * @throws Exception 　　
+     */
+    public static long getFileSize(File file) throws Exception {
+        long size = 0;
+        try {
+            if (file.exists()) {
+                FileInputStream fis = null;
+                fis = new FileInputStream(file);
+                size = fis.available();
+            } else {
+                file.createNewFile();
+                Log.e("获取文件大小", "文件不存在!");
+            }
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return size;
+    }
+
+    /**
+     * 获取指定文件大小
+     * @param f
+     * @return
+     * @throws Exception 　　
+     */
+    public static long getFileSize(String path) {
+        File file = new File(path);
+        long size = 0;
+        try {
+            if (file.exists()) {
+                FileInputStream fis = null;
+                fis = new FileInputStream(file);
+                size = fis.available();
+            } else {
+                file.createNewFile();
+                Log.e("获取文件大小", "文件不存在!");
+            }
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return size;
     }
 }

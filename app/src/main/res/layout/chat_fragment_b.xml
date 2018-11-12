@@ -71,12 +71,16 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content">
 
+            <FrameLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_marginEnd="8dp">
             <TextView
                 android:id="@+id/tv_bubble_content"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
-                android:layout_marginRight="8dp"
+
                 android:background="@drawable/bg_tvb"
                 android:gravity="center"
                 android:paddingBottom="6dp"
@@ -85,6 +89,17 @@
                 android:paddingTop="6dp"
                 android:text="11111111111111"
                 android:textColor="#FFFFFF" />
+
+            <ImageView
+                android:id="@+id/iv_bubble_content"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingBottom="6dp"
+                android:paddingLeft="8dp"
+                android:paddingRight="8dp"
+                android:paddingTop="6dp"/>
+
+            </FrameLayout>
         </RelativeLayout>
 
 

@@ -464,35 +464,4 @@ public class AdminActivity extends BaseActivity
         }
 
     }
-
-    /**
-     * 客户端连接聊天服务器端。
-     */
-/*    class ConnectServer extends Thread {
-
-        @Override
-        public void run() {
-            super.run();
-
-            try {
-                Thread.sleep(2000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-
-            while (wifiTools.getConnectedHotIP().size() < 2) {
-                try {
-                    Thread.sleep(500);
-                    System.out.println("wait");
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
-            socketClient = new SocketClient();
-            socketClient.createClient(wifiTools.getConnectedHotIP().get(1));
-            Message msg = new Message();
-            msg.what = ConstantC.CLIENT_CONNECT_SERVER;
-            mainHandler.sendMessage(msg);
-        }
-    }*/
 }

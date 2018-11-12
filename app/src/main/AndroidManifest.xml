@@ -36,6 +36,7 @@
         <activity android:name=".admin.AdminActivity"/>
         <activity android:name=".activity.CreateRoomActivity"/>
         <activity android:name=".activity.ChatRoomActivity"/>
+        <activity android:name=".activity.FileActivity"/>
 
         <receiver android:name=".WifiTool.WifiReceiver">
             <intent-filter>

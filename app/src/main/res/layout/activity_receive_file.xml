@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:id="@+id/tv_record_title"
+        style="@style/Title_Style"
+        android:text="@string/action_file" />
+
+    <ImageView
+        android:id="@+id/start_record"
+        android:layout_width="@dimen/title_size"
+        android:layout_height="@dimen/title_size"
+        android:layout_alignParentRight="true"
+        android:layout_marginTop="@dimen/title_size"
+        android:layout_marginEnd="@dimen/title_size"
+        android:src="@drawable/ic_action_nav" />
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/rv_record_video"
+        android:layout_below="@+id/tv_record_title"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+    </android.support.v7.widget.RecyclerView>
+</RelativeLayout>
