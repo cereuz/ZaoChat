@@ -69,7 +69,8 @@
 
         <RelativeLayout
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:paddingStart="40dp">
 
             <FrameLayout
                 android:layout_width="wrap_content"
@@ -82,7 +83,6 @@
                 android:layout_height="wrap_content"
 
                 android:background="@drawable/bg_tvb"
-                android:gravity="center"
                 android:paddingBottom="6dp"
                 android:paddingLeft="8dp"
                 android:paddingRight="8dp"

@@ -2,23 +2,35 @@ package com.zao.zaochat.activity;
 
 import android.annotation.TargetApi;
 import android.app.Activity;
+import android.content.ClipData;
+import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.Nullable;
+import android.support.constraint.ConstraintLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.View;
+import android.view.animation.AlphaAnimation;
+import android.view.animation.Animation;
+import android.view.animation.AnimationSet;
+import android.view.animation.ScaleAnimation;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.PopupWindow;
 import android.widget.TextView;
 
 import com.zao.zaochat.R;
@@ -32,7 +44,9 @@ import com.zao.zaochat.global.MessageType;
 import com.zao.zaochat.model.ChatModel;
 import com.zao.zaochat.model.ItemModel;
 import com.zao.zaochat.object.SocketUser;
+import com.zao.zaochat.utils.ConstantValue;
 import com.zao.zaochat.utils.LogUtil;
+import com.zao.zaochat.utils.ScreenUtils;
 import com.zao.zaochat.utils.ToastUtil;
 import com.zao.zaochat.utils.ZaoUtils;
 import com.zao.zaochat.widget.UserInfoDialog;
@@ -43,7 +57,7 @@ import java.util.ArrayList;
 
 import static com.zao.zaochat.global.GetFilePathByUri.getPathByUri4kitkat;
 
-public class ChatRoomActivity extends AppCompatActivity implements SocketServer.SConnectListener, SocketClient.ConnectListener{
+public class ChatRoomActivity extends AppCompatActivity implements SocketServer.SConnectListener, SocketClient.ConnectListener,View.OnClickListener {
 
     private Context mContext;
     private WifiTools wifiTools;
@@ -60,12 +74,20 @@ public class ChatRoomActivity extends AppCompatActivity implements SocketServer.
     RecyclerView rv_chatroom;
     EditText et_chatroom;
     TextView tv_chatroom_text;
-    TextView tv_chatroom_file;
+    ImageView iv_chatroom_file;
     ChatRoomAdapter chatRoomAdapter;
+
+    TextView tv_copy;
+    TextView tv_send;
+    TextView tv_share;
+    TextView tv_store;
+    TextView tv_delete;
+    TextView tv_more;
+    PopupWindow popupWindow;
 
     private int sign;
     private String content;
-
+    String mContent;
 
     /**
      * 监听来自子线程的消息
@@ -151,7 +173,7 @@ public class ChatRoomActivity extends AppCompatActivity implements SocketServer.
         rv_chatroom = (RecyclerView)findViewById(R.id.rv_chatroom);
         et_chatroom = (EditText) findViewById(R.id.et_chatroom);
         tv_chatroom_text = (TextView) findViewById(R.id.tv_chatroom_text);
-        tv_chatroom_file = (TextView) findViewById(R.id.tv_chatroom_file);
+        iv_chatroom_file = (ImageView) findViewById(R.id.iv_chatroom_file);
         rv_chatroom.setHasFixedSize(true);
         rv_chatroom.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
         rv_chatroom.setAdapter(chatRoomAdapter = new ChatRoomAdapter());
@@ -165,12 +187,20 @@ public class ChatRoomActivity extends AppCompatActivity implements SocketServer.
             et_chatroom.addTextChangedListener(new TextWatcher() {
                 @Override
                 public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
+                    LogUtil.e("BEFORE_TEXT_CHANGED" + s + "==" + start + "==" + count + "==" + after);
                 }
 
                 @Override
                 public void onTextChanged(CharSequence s, int start, int before, int count) {
+                    LogUtil.e("ON_TEXT_CHANGED" + s + "==" + start + "==" + before + "==" + count);
 
+                    if(count == 0){
+                         tv_chatroom_text.setVisibility(View.GONE);
+                         iv_chatroom_file.setVisibility(View.VISIBLE);
+                    } else {
+                        tv_chatroom_text.setVisibility(View.VISIBLE);
+                        iv_chatroom_file.setVisibility(View.GONE);
+                    }
                 }
 
                 @Override
@@ -191,7 +221,7 @@ public class ChatRoomActivity extends AppCompatActivity implements SocketServer.
                 }
             });
 
-            tv_chatroom_file.setOnClickListener(new View.OnClickListener() {
+            iv_chatroom_file.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     sendFile();
@@ -203,13 +233,140 @@ public class ChatRoomActivity extends AppCompatActivity implements SocketServer.
                 public void onIconClick(ChatModel model) {
                     UserInfoDialog userInfoDialog=new UserInfoDialog(mContext,ChatRoomActivity.this.getLayoutInflater(),R.layout.dialog_user_info,model);
                     userInfoDialog.initParameterAndShow();
+                    LogUtil.e("onIconClick ：" + model.toString());
+                }
+
+                @Override
+                public void onContentClick(ChatModel model) {
+                    LogUtil.d("onContentClick ：" + model.toString());
+                }
+
+                @Override
+                public void onContentLongClick(View view,ChatModel model) {
+                    LogUtil.e("onContentLongClick ：" + model.toString() + "=" + model.getContent());
+                    mContent = model.getContent();
+                    //动画效果的弹出框
+                    showPopupWindow(view);
                 }
             });
-
 
         }
     }
 
+
+    /**
+     * 显示弹出框
+     */
+    private void showPopupWindow(View view) {
+        View popupView = View.inflate(this,R.layout.popupwindow_appmanager_view,null);
+        //设置透明
+        ConstraintLayout cl_view = (ConstraintLayout) popupView.findViewById(R.id.cl_view);
+        cl_view.getBackground().setAlpha(200);//0~255透明度值 0：全透明；255不透明
+
+        tv_copy = (TextView)popupView.findViewById(R.id.tv_copy);
+        tv_send = (TextView)popupView.findViewById(R.id.tv_send);
+        tv_share = (TextView)popupView.findViewById(R.id.tv_share);
+        tv_store = (TextView)popupView.findViewById(R.id.tv_store);
+        tv_delete = (TextView)popupView.findViewById(R.id.tv_delete);
+        tv_more = (TextView)popupView.findViewById(R.id.tv_more);
+
+
+        tv_copy.setOnClickListener(this);
+        tv_send.setOnClickListener(this);
+        tv_share.setOnClickListener(this);
+        tv_store.setOnClickListener(this);
+        tv_delete.setOnClickListener(this);
+        tv_more.setOnClickListener(this);
+
+        //透明动画（透明 -- > 不透明）
+        AlphaAnimation alphaAnimation = new AlphaAnimation(0,1);
+        alphaAnimation.setDuration(ConstantValue.ONE_SECOND);
+        alphaAnimation.setFillAfter(true);
+        //缩放动画
+        ScaleAnimation scaleAnimation = new ScaleAnimation(
+                0,1,
+                0,1,
+                Animation.RELATIVE_TO_SELF,0.5f,
+                Animation.RELATIVE_TO_SELF,0.5f
+        );
+        scaleAnimation.setDuration(ConstantValue.ONE_SECOND);
+        scaleAnimation.setFillAfter(true);
+        //动画集合set
+        AnimationSet animationSet = new AnimationSet(true);
+        //添加两个动画
+        animationSet.addAnimation(alphaAnimation);
+        animationSet.addAnimation(scaleAnimation);
+
+        //1.创建窗体对象，指定宽高
+        popupWindow = new PopupWindow(popupView,
+                LinearLayout.LayoutParams.WRAP_CONTENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT,
+                true);
+        //2.设置一个透明背景图片，如果不设值，返回键会不响应
+        popupWindow.setBackgroundDrawable(new ColorDrawable());
+
+        //3.指定窗体位置
+        int windowPos[] = ScreenUtils.calculatePopWindowPos(view, popupView);
+        int xOff = 20;  // 可以自己调整偏移
+        windowPos[0] -= xOff;
+        popupWindow.showAtLocation(view, Gravity.TOP | Gravity.START, windowPos[0], windowPos[1]);
+
+
+
+//        int windowPos[] = ScreenUtils.calculatePopWindowPos(view, popupView);
+        //3.指定窗体位置
+//        popupWindow.showAsDropDown(view,10,-windowPos[1]);
+//        popupWindow.showAsDropDown(view,10,-view.getHeight() - 30);
+//        屏幕正中间
+//        popupWindow.showAtLocation(getWindow().getDecorView(), Gravity.CENTER, 0, 0);
+
+        //执行动画集合set
+        popupView.startAnimation(animationSet);
+    }
+
+
+
+    @Override
+    public void onClick(View view) {
+        switch (view.getId()){
+            case R.id.tv_copy:
+/*                // 从API11开始android推荐使用android.content.ClipboardManager
+                // 为了兼容低版本我们这里使用旧版的android.text.ClipboardManager，虽然提示deprecated，但不影响使用。
+                ClipboardManager cm = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
+                // 将文本内容放到系统剪贴板里。
+                cm.setText(mContent);*/
+
+                // 获取系统剪贴板
+                ClipboardManager clipboard = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
+               // 创建一个剪贴数据集，包含一个普通文本数据条目（需要复制的数据）
+                ClipData clipData = ClipData.newPlainText(null, mContent);
+                // 把数据集设置（复制）到剪贴板
+                clipboard.setPrimaryClip(clipData);
+                ToastUtil.showT(getApplicationContext(),"tv_copy==已复制");
+                break;
+
+            case R.id.tv_send:
+                ToastUtil.showT(getApplicationContext(),"tv_send");
+                break;
+
+            case R.id.tv_share:
+                ToastUtil.showT(getApplicationContext(),"tv_share");
+                break;
+
+            case R.id.tv_store:
+                ToastUtil.showT(getApplicationContext(),"tv_store");
+                break;
+            case R.id.tv_delete:
+                ToastUtil.showT(getApplicationContext(),"tv_delete");
+                break;
+            case R.id.tv_more:
+                ToastUtil.showT(getApplicationContext(),"tv_more");
+                break;
+        }
+        if(popupWindow != null){
+            popupWindow.dismiss();
+        }
+    }
 
     /**
      * 服务器接受到消息并进行处理
@@ -234,12 +391,14 @@ public class ChatRoomActivity extends AppCompatActivity implements SocketServer.
                     String rMsg = infoMsg[5];
                     LogUtil.i("消息内容为" + rMsg);
 
+
                     model.setNick(infoMsg[0]);
                     model.setIllustration(infoMsg[1]);
                     model.setSex(infoMsg[2]);
                     model.setIcon(infoMsg[3]);
                     model.setSign(infoMsg[4]);
                     model.setTime(ZaoUtils.getSystemTimeMore(3));
+                    model.setType(MessageType.SERVER_MESSAGE_RECEIVED_SIGN);
                     model.setContent(rMsg);
                     data.add(new ItemModel(ItemModel.CHAT_A, model));
                     chatRoomAdapter.addAll(data);
@@ -275,6 +434,7 @@ public class ChatRoomActivity extends AppCompatActivity implements SocketServer.
                     model.setIllustration(socketUser.getUserIllustration());
                     model.setSex(socketUser.getIsMan());
                     model.setSign(socketUser.getSign() + "");
+                    model.setType(MessageType.SERVER_MESSAGE_SEND_SIGN);
                     model.setTime(ZaoUtils.getSystemTimeMore(3));
                     model.setContent(rMsg);
                     data.add(new ItemModel(ItemModel.CHAT_B, model));
@@ -330,6 +490,7 @@ public class ChatRoomActivity extends AppCompatActivity implements SocketServer.
                                 model.setIcon(infoMsg[3]);
                                 model.setSign(infoMsg[4]);
                                 model.setContent(rMsg);
+                                model.setType(MessageType.CLIENT_MESSAGE_RECEIVED_SIGN);
                                 model.setTime(ZaoUtils.getSystemTimeMore(3));
                                 data.add(new ItemModel(ItemModel.CHAT_A, model));
 
@@ -357,6 +518,7 @@ public class ChatRoomActivity extends AppCompatActivity implements SocketServer.
                             model.setSex(infoMsg[2]);
                             model.setIcon(infoMsg[3]);
                             model.setSign(infoMsg[4]);
+                            model.setType(MessageType.SERVER_MESSAGE_RECEIVED_SIGN);
                             model.setTime(ZaoUtils.getSystemTimeMore(3));
                             model.setContent(rMsg);
                             data.add(new ItemModel(ItemModel.CHAT_A, model));
@@ -389,6 +551,7 @@ public class ChatRoomActivity extends AppCompatActivity implements SocketServer.
                                 model.setSex(infoMsg[2]);
                                 model.setIcon(infoMsg[3]);
                                 model.setSign(infoMsg[4]);
+                                model.setType(MessageType.SERVER_FILE_RECEIVED_SIGN);
                                 model.setTime(ZaoUtils.getSystemTimeMore(3));
                                 model.setContent(rMsg);
                                 data.add(new ItemModel(ItemModel.CHAT_A, model));
@@ -436,6 +599,7 @@ public class ChatRoomActivity extends AppCompatActivity implements SocketServer.
                     model.setIllustration(socketUser.getUserIllustration());
                     model.setSex(socketUser.getIsMan());
                     model.setSign(socketUser.getSign() + "");
+                    model.setType(MessageType.CLIENT_FILE_SEND_SIGN);
                     model.setTime(ZaoUtils.getSystemTimeMore(3));
                     model.setContent(rMsg);
 
@@ -598,10 +762,6 @@ public class ChatRoomActivity extends AppCompatActivity implements SocketServer.
         }
     }
 
-/*    public SocketClient getSocketClient() {
-        return socketClient;
-    }*/
-
 
     class ConnectServer extends Thread {
 
@@ -656,6 +816,5 @@ public class ChatRoomActivity extends AppCompatActivity implements SocketServer.
             return true;
         }
         return super.onKeyDown(keyCode, event);
-
     }
 }

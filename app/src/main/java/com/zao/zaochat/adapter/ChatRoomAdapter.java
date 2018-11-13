@@ -17,7 +17,7 @@ import java.util.ArrayList;
 /**
  * Created by yummy on 2016/11/28.
  */
-public class ChatRoomAdapter extends RecyclerView.Adapter<ChatRoomAdapter.BaseAdapter> {
+public class ChatRoomAdapter extends RecyclerView.Adapter<ChatRoomAdapter.BaseAdapter>{
 
     private ArrayList<ItemModel> dataList = new ArrayList<>();
     private OnChatModelItemClickListener listener;
@@ -123,12 +123,27 @@ public class ChatRoomAdapter extends RecyclerView.Adapter<ChatRoomAdapter.BaseAd
             civIcon.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    LogUtil.e(model.getNick() + "--" + model.getIllustration() + "--" + model.getSex() + "--" + model.getIcon() + "--" + model.getSign());
                     listener.onIconClick(model);
                 }
             });
 
             tvContent.setText(model.getContent());
+            tvContent.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    listener.onContentClick(model);
+                }
+            });
+
+            tvContent.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View view) {
+                    listener.onContentLongClick(view,model);
+                    return true;
+                }
+            });
+
+
             tvName.setText(model.getNick() + "(" + model.getSign() + ")");
             switch (model.getSex()) {
                 case "man":
@@ -191,6 +206,22 @@ public class ChatRoomAdapter extends RecyclerView.Adapter<ChatRoomAdapter.BaseAd
             });
 
             tvContent.setText(model.getContent());
+            tvContent.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    listener.onContentClick(model);
+                }
+            });
+
+            tvContent.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View view) {
+                    listener.onContentLongClick(view,model);
+                    return true;
+                }
+            });
+
+
             tvName.setText(model.getNick()  + "(" + model.getSign() + ")");
             switch (model.getSex()) {
                 case "man":
@@ -212,6 +243,8 @@ public class ChatRoomAdapter extends RecyclerView.Adapter<ChatRoomAdapter.BaseAd
 
     public interface OnChatModelItemClickListener {
         void onIconClick(ChatModel model);
+        void onContentClick(ChatModel model);
+        void onContentLongClick(View view,ChatModel model);
     }
 
 }
