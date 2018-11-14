@@ -187,14 +187,14 @@ public class ChatRoomActivity extends AppCompatActivity implements SocketServer.
             et_chatroom.addTextChangedListener(new TextWatcher() {
                 @Override
                 public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-                    LogUtil.e("BEFORE_TEXT_CHANGED" + s + "==" + start + "==" + count + "==" + after);
+                    LogUtil.e("BEFORE_TEXT_CHANGED"  + "==" + start + "==" + count + "==" + after + s);
                 }
 
                 @Override
                 public void onTextChanged(CharSequence s, int start, int before, int count) {
-                    LogUtil.e("ON_TEXT_CHANGED" + s + "==" + start + "==" + before + "==" + count);
+                    LogUtil.e("ON_TEXT_CHANGED" + "==" + start + "==" + before + "==" + count + s);
 
-                    if(count == 0){
+                    if(count == 0 && start==0){
                          tv_chatroom_text.setVisibility(View.GONE);
                          iv_chatroom_file.setVisibility(View.VISIBLE);
                     } else {
@@ -258,12 +258,12 @@ public class ChatRoomActivity extends AppCompatActivity implements SocketServer.
      * 显示弹出框
      */
     private void showPopupWindow(View view) {
-        View popupView = View.inflate(this,R.layout.popupwindow_appmanager_view,null);
+        View popupView = View.inflate(this,R.layout.popupwindow_chat_message_view,null);
         //设置透明
         ConstraintLayout cl_view = (ConstraintLayout) popupView.findViewById(R.id.cl_view);
         cl_view.getBackground().setAlpha(200);//0~255透明度值 0：全透明；255不透明
 
-        tv_copy = (TextView)popupView.findViewById(R.id.tv_copy);
+        tv_copy = (TextView)popupView.findViewById(R.id.tv_file_open);
         tv_send = (TextView)popupView.findViewById(R.id.tv_send);
         tv_share = (TextView)popupView.findViewById(R.id.tv_share);
         tv_store = (TextView)popupView.findViewById(R.id.tv_store);
@@ -306,7 +306,7 @@ public class ChatRoomActivity extends AppCompatActivity implements SocketServer.
         popupWindow.setBackgroundDrawable(new ColorDrawable());
 
         //3.指定窗体位置
-        int windowPos[] = ScreenUtils.calculatePopWindowPos(view, popupView);
+        int windowPos[] = ScreenUtils.calculatePopWindowPos(view, popupView,30,50);
         int xOff = 20;  // 可以自己调整偏移
         windowPos[0] -= xOff;
         popupWindow.showAtLocation(view, Gravity.TOP | Gravity.START, windowPos[0], windowPos[1]);
@@ -329,7 +329,7 @@ public class ChatRoomActivity extends AppCompatActivity implements SocketServer.
     @Override
     public void onClick(View view) {
         switch (view.getId()){
-            case R.id.tv_copy:
+            case R.id.tv_file_open:
 /*                // 从API11开始android推荐使用android.content.ClipboardManager
                 // 为了兼容低版本我们这里使用旧版的android.text.ClipboardManager，虽然提示deprecated，但不影响使用。
                 ClipboardManager cm = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);

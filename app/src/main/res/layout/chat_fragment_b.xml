@@ -9,8 +9,7 @@
         android:id="@+id/civ_bubble_user_icon"
         android:layout_width="48dp"
         android:layout_height="48dp"
-        android:layout_alignParentRight="true"
-        android:layout_centerVertical="true"
+        android:layout_alignParentEnd="true"
         android:src="@drawable/header"
         app:border_color="#E0E0E0"
         app:border_width="2dp" />
@@ -19,7 +18,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
-        android:layout_toLeftOf="@+id/civ_bubble_user_icon"
+        android:layout_toStartOf="@+id/civ_bubble_user_icon"
         android:orientation="vertical">
 
         <RelativeLayout

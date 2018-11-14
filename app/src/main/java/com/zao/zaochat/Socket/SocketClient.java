@@ -6,6 +6,7 @@ import android.util.Log;
 import com.zao.zaochat.global.ConstantC;
 import com.zao.zaochat.global.MessageType;
 import com.zao.zaochat.object.SocketUser;
+import com.zao.zaochat.utils.LogUtil;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
@@ -50,7 +51,6 @@ public class SocketClient {
 
                     while ((len = inputStream.read(buffer)) != -1) {
                         String data = new String(buffer, 0, len);
-
                         //通过回调接口将获取到的数据推送出去
                         if (mListener != null) {
                             if (data.startsWith(MessageType.SERVER_FILE_SIGN)) {
@@ -73,18 +73,16 @@ public class SocketClient {
                                         e.printStackTrace();
                                     }
                                     socket.getOutputStream().flush();
-
                                 }
-
                             } else {
-                                Log.i(TAG, "收到准备处理的消息：" + data);
+                                LogUtil.i("收到准备处理的消息：" + data.length() + "==" + data);
                                 handleMessageFromServer(data);
                             }
                         } else {
-                            System.out.println("null");
+                            LogUtil.i(" mListener is null");
                         }
                     }
-                } catch (IOException e) {
+                }catch (IOException e) {
                     e.printStackTrace();
                 }
             }

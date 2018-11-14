@@ -26,7 +26,7 @@ public class ScreenUtils {
      * @param contentView   window的内容布局
      * @return window显示的左上角的xOff,yOff坐标
      */
-    public static int[] calculatePopWindowPos(final View anchorView, final View contentView) {
+    public static int[] calculatePopWindowPos(final View anchorView, final View contentView,int xOff,int yOff) {
         final int windowPos[] = new int[2];
         final int anchorLoc[] = new int[2];
         // 获取锚点View在屏幕上的左上角坐标位置
@@ -45,18 +45,18 @@ public class ScreenUtils {
         //判断需要在左侧显示，还是右侧显示，需要考虑头像的宽度。
         final boolean isNeedShowLeft = (screenWidth - anchorLoc[0] - anchorWidth < (windowWidth + 80));
         if (isNeedShowUp) {
-            windowPos[1] = anchorLoc[1] - windowHeight + 50;
+            windowPos[1] = anchorLoc[1] - windowHeight + yOff;  //50
             if(isNeedShowLeft){
-                windowPos[0] = anchorLoc[0] + anchorWidth - windowWidth - 30 ;
+                windowPos[0] = anchorLoc[0] + anchorWidth - windowWidth - xOff ;//30
             } else {
-                windowPos[0] = anchorLoc[0] + 30 ;
+                windowPos[0] = anchorLoc[0] + xOff ;
             }
         } else {
-            windowPos[1] = anchorLoc[1] + anchorHeight - 20;
+            windowPos[1] = anchorLoc[1] + anchorHeight - yOff;  // 20
             if(isNeedShowLeft){
-                windowPos[0] = anchorLoc[0] + anchorWidth - windowWidth - 30 ;
+                windowPos[0] = anchorLoc[0] + anchorWidth - windowWidth - xOff ;
             } else {
-                windowPos[0] = anchorLoc[0] + 30 ;
+                windowPos[0] = anchorLoc[0] + xOff ;
             }
         }
         return windowPos;
