@@ -71,9 +71,11 @@ public class ConstantC {
     /**
      * 六秒钟
      */
-    public static final long SIX_SENCOND = 6000;
+    public static final long SIX_THOUSAND = 6000;
+    public static final int TWO_THOUSAND = 2000;
     /**
      * 接收的文件保存的路径
      */
     public static final String ZAO_CHAT_PATH = Environment.getExternalStorageDirectory().getAbsolutePath() + "/" + "ZaoChat" + "/";
+
 }

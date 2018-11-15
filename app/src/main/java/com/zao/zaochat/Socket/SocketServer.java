@@ -166,7 +166,7 @@ public class SocketServer {
                 InetAddress inetAddress = socket.getInetAddress();
                 System.out.println(inetAddress.getHostAddress());
 
-                byte[] buffer = new byte[1024];
+                byte[] buffer = new byte[1024 * 1024];
                 int len = -1;
                 while ((len = inputStream.read(buffer)) != -1) {
 //                    System.out.println("ASDADSA");

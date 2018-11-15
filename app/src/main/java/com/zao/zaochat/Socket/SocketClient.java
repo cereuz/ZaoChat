@@ -46,7 +46,7 @@ public class SocketClient {
 //                    sendMessageToServer(socketUser.getSign()+"",MessageType.CLIENT_USER_ID_SIGN);
 //                    Log.i(TAG,"发送用户标志给服务器:"+socketUser.getSign());
                     InputStream inputStream = socket.getInputStream();
-                    byte[] buffer = new byte[1024];
+                    byte[] buffer = new byte[1024 * 1024];
                     int len = -1;
 
                     while ((len = inputStream.read(buffer)) != -1) {

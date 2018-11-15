@@ -47,6 +47,7 @@ import com.zao.zaochat.object.SocketUser;
 import com.zao.zaochat.utils.ConstantValue;
 import com.zao.zaochat.utils.LogUtil;
 import com.zao.zaochat.utils.ScreenUtils;
+import com.zao.zaochat.utils.TextUse;
 import com.zao.zaochat.utils.ToastUtil;
 import com.zao.zaochat.utils.ZaoUtils;
 import com.zao.zaochat.widget.UserInfoDialog;
@@ -54,6 +55,7 @@ import com.zao.zaochat.widget.UserInfoDialog;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 
 import static com.zao.zaochat.global.GetFilePathByUri.getPathByUri4kitkat;
 
@@ -148,7 +150,7 @@ public class ChatRoomActivity extends AppCompatActivity implements SocketServer.
                 socketServer = new SocketServer();
                 socketServer.setOnSConnectListener(this);
                 socketServer.createServer();
-                mHandler.sendEmptyMessageDelayed(ConstantC.WIFI_AP_ENABLED,ConstantC.SIX_SENCOND);
+                mHandler.sendEmptyMessageDelayed(ConstantC.WIFI_AP_ENABLED,ConstantC.SIX_THOUSAND);
             }
         }
      }
@@ -216,8 +218,12 @@ public class ChatRoomActivity extends AppCompatActivity implements SocketServer.
                 @TargetApi(Build.VERSION_CODES.M)
                 @Override
                 public void onClick(View v) {
-                    mHandler.sendEmptyMessage(ConstantC.SEND_MESSAGE_Z);
+                    if(content.length() > 1024 * 500){
+                       ToastUtil.showT(mContext,"超出最大发送字数限制！请分段发送。");
+                    } else {
+                        mHandler.sendEmptyMessage(ConstantC.SEND_MESSAGE_Z);
 //                sendMessageZ();
+                    }
                 }
             });
 

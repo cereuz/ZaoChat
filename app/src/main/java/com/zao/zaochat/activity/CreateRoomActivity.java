@@ -3,10 +3,7 @@ package com.zao.zaochat.activity;
 import android.content.Context;
 import android.content.Intent;
 import android.net.wifi.WifiConfiguration;
-import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AppCompatActivity;
@@ -29,9 +26,8 @@ import com.zao.zaochat.WifiTool.WifiTools;
 import com.zao.zaochat.global.ConstantC;
 import com.zao.zaochat.global.GenerateRandom;
 import com.zao.zaochat.object.SocketUser;
-import com.zao.zaochat.utils.DeviceUtil;
 import com.zao.zaochat.utils.LogUtil;
-import com.zao.zaochat.utils.TextUtil;
+import com.zao.zaochat.utils.TextUse;
 import com.zao.zaochat.widget.CreatingDialog;
 
 public class CreateRoomActivity extends AppCompatActivity implements TextWatcher,CompoundButton.OnCheckedChangeListener,View.OnFocusChangeListener,View.OnClickListener {
@@ -155,7 +151,7 @@ public class CreateRoomActivity extends AppCompatActivity implements TextWatcher
          * 1：第一个（名称）被选中，2：第二个（密码）被选中
          */
              if(on_focus == 1){
-                 if(TextUtil.containSpace(s)){
+                 if(TextUse.containSpace(s)){
                      til_create_room_name.setHint("名称不能包含空格");
                  } else if(length < 2){
 /*                      til_create_room_name.setError("名称不能为空");
@@ -167,7 +163,7 @@ public class CreateRoomActivity extends AppCompatActivity implements TextWatcher
                        til_create_room_name.setHint("名称");
                   }
                 } else if (on_focus == 2){
-                 if(TextUtil.containSpace(s)){
+                 if(TextUse.containSpace(s)){
                      til_create_room_password.setHint("密码不能包含空格");
                  } else
                  if(length < 8){
@@ -269,7 +265,7 @@ public class CreateRoomActivity extends AppCompatActivity implements TextWatcher
         LogUtil.e("创建聊天室==" + acet_name + "=" + acet_password);
         WifiConfiguration wifiConfiguration = null;
         if (!rb_create_with_password.isChecked()) {
-            if (TextUtils.isEmpty(acet_name) || TextUtil.containSpace(acet_name)|| acet_name.length()< 2) {
+            if (TextUtils.isEmpty(acet_name) || TextUse.containSpace(acet_name)|| acet_name.length()< 2) {
                 shakeMe(til_create_room_name);
             } else {
                 wifiConfiguration = wifiTools.createWifiInfo(ConstantC.WIFI_AP_PRE + acet_name, "", "WifiAP", wifiTools.WIFICIPHER_NOPASS);
@@ -277,11 +273,11 @@ public class CreateRoomActivity extends AppCompatActivity implements TextWatcher
                 choosen_can = true;
             }
           }  else {
-                if (TextUtils.isEmpty(acet_name) || TextUtil.containSpace(acet_name) || acet_name.length() < 2) {
+                if (TextUtils.isEmpty(acet_name) || TextUse.containSpace(acet_name) || acet_name.length() < 2) {
                     shakeMe(til_create_room_name);
                     choosen_can = false;
                 }
-                if (TextUtils.isEmpty(acet_password) || TextUtil.containSpace(acet_password) || acet_password.length() < 8) {
+                if (TextUtils.isEmpty(acet_password) || TextUse.containSpace(acet_password) || acet_password.length() < 8) {
                     shakeMe(til_create_room_password);
                     choosen_can = false;
                 }  else {

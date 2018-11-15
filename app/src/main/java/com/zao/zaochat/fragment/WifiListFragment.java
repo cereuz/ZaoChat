@@ -157,7 +157,7 @@ public class WifiListFragment extends Fragment implements View.OnClickListener {
         } else {
             wifiTools.openWifi();
 //            wifiTools.openWifi2(mContext);
-            mHandler.sendEmptyMessageDelayed(ConstantC.WIFI_LIST_OPEN_REFRESHED,ConstantC.SIX_SENCOND);
+            mHandler.sendEmptyMessageDelayed(ConstantC.WIFI_LIST_OPEN_REFRESHED,ConstantC.SIX_THOUSAND);
         }
 
         wifiReceiver = new WifiReceiver();
