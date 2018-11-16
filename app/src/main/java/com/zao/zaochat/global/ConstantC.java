@@ -35,6 +35,7 @@ public class ConstantC {
     public final static int WIFI_CONNECT_FAILED = 12356;
 
     public static final int SEND_MESSAGE_Z = 12358;
+    public static final int SEND_FILE_Z = 12359;
 
     public final static String WIFI_AP_PRE = "ZAO-";
     public final static String NO_USERS_TIPS = "当前聊天室空无一人";
@@ -76,6 +77,6 @@ public class ConstantC {
     /**
      * 接收的文件保存的路径
      */
-    public static final String ZAO_CHAT_PATH = Environment.getExternalStorageDirectory().getAbsolutePath() + "/" + "ZaoChat" + "/";
+    public static final String ZAO_CHAT_PATH = Environment.getExternalStorageDirectory().getAbsolutePath() + "/" + "aZaoChat" + "/";
 
 }

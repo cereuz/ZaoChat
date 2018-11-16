@@ -6,6 +6,7 @@ import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.BitmapFactory;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Build;
@@ -18,6 +19,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
+import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.Gravity;
 import android.view.KeyEvent;
@@ -120,6 +122,13 @@ public class ChatRoomActivity extends AppCompatActivity implements SocketServer.
                     case ConstantC.SEND_MESSAGE_Z:
                         sendMessageZ();
                         break;
+                    case ConstantC.SEND_FILE_Z:
+                        File file = (File)msg.obj;
+                        try {
+                            socketServer.sendFile(socketUser.getSign() + "", file);
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
                     default:
                         break;
                 }
@@ -196,7 +205,7 @@ public class ChatRoomActivity extends AppCompatActivity implements SocketServer.
                 public void onTextChanged(CharSequence s, int start, int before, int count) {
                     LogUtil.e("ON_TEXT_CHANGED" + "==" + start + "==" + before + "==" + count + s);
 
-                    if(count == 0 && start==0){
+                    if(count == 0 && start==0 && before==0 || TextUtils.isEmpty(s.toString().replace(" ",""))){
                          tv_chatroom_text.setVisibility(View.GONE);
                          iv_chatroom_file.setVisibility(View.VISIBLE);
                     } else {
@@ -209,7 +218,7 @@ public class ChatRoomActivity extends AppCompatActivity implements SocketServer.
                 public void afterTextChanged(Editable s) {
                     content = s.toString().trim();
                     if (content.length() < 1) {
-                        content = " ";
+                        content = "";
                     }
                 }
             });
@@ -632,11 +641,11 @@ public class ChatRoomActivity extends AppCompatActivity implements SocketServer.
                         ToastUtil.showT(mContext, "文件大小不得大于5MB!");
                         break;
                     }
-                    try {
-                        socketServer.sendFile(socketUser.getSign() + "", file);
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
+                        Message msg = Message.obtain();
+                        msg.what = ConstantC.SEND_FILE_Z;
+                        msg.obj = file;
+                        mHandler.sendMessage(msg);
+//                     socketServer.sendFile(socketUser.getSign() + "", file);
 
                 } else {
                     LogUtil.e("file_pick_error");

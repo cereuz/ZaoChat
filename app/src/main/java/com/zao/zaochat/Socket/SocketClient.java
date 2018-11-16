@@ -1,12 +1,12 @@
 package com.zao.zaochat.Socket;
 
-import android.os.Environment;
 import android.util.Log;
 
 import com.zao.zaochat.global.ConstantC;
 import com.zao.zaochat.global.MessageType;
 import com.zao.zaochat.object.SocketUser;
 import com.zao.zaochat.utils.LogUtil;
+import com.zao.zaochat.utils.ZaoUtils;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
@@ -173,7 +173,7 @@ public class SocketClient {
                 }
 
 
-                int bufferSize = 8192;
+                int bufferSize = 1024 * 1024;
                 byte[] buf = new byte[bufferSize];
 
                 long pass_len = 0;
@@ -229,7 +229,7 @@ public class SocketClient {
         DataInputStream dataInputStream = new DataInputStream(new BufferedInputStream(socket.getInputStream()));
 
         // 本地保存路径，文件名会自动从服务器端继承而来。
-        int bufferSize = 8192;
+        int bufferSize = 1024 * 1024;
         byte[] buf = new byte[bufferSize];
         int passedlen = 0;
         long long_len = 0;

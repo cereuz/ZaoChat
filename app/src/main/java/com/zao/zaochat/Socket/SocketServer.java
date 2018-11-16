@@ -1,6 +1,6 @@
 package com.zao.zaochat.Socket;
 
-import android.os.Environment;
+import android.graphics.BitmapFactory;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
@@ -417,7 +417,7 @@ public class SocketServer {
                 dos.writeLong(file_size);
                 dos.flush();
 
-                int bufferSize = 8192;
+                int bufferSize = 1024 * 1024;
                 byte[] buf = new byte[bufferSize];
 
                 long pass_len = 0;
@@ -470,9 +470,8 @@ public class SocketServer {
 
         DataInputStream dataInputStream = new DataInputStream(new BufferedInputStream(inputStream));
 //        InputStream inputStream = socket.getInputStream();
-
         // 本地保存路径，文件名会自动从服务器端继承而来。
-        int bufferSize = 8192;
+        int bufferSize = 1024 * 1024;
         byte[] buf = new byte[bufferSize];
         int passedlen = 0;
         long long_len = 0;

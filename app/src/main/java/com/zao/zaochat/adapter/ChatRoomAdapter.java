@@ -87,6 +87,7 @@ public class ChatRoomAdapter extends RecyclerView.Adapter<ChatRoomAdapter.BaseAd
         private TextView tvName;
         private ImageView ivSex;
         private TextView tvTime;
+        private ImageView ivContent;
 
         public ChatAViewHolder(View view) {
             super(view);
@@ -95,6 +96,7 @@ public class ChatRoomAdapter extends RecyclerView.Adapter<ChatRoomAdapter.BaseAd
             tvName = (TextView) itemView.findViewById(R.id.tv_bubble_user_name);
             ivSex = (ImageView) itemView.findViewById(R.id.iv_bubble_user_sex);
             tvTime = (TextView) itemView.findViewById(R.id.tv_bubble_user_time);
+            ivContent = (ImageView) itemView.findViewById(R.id.iv_bubble_content);
         }
 
         @Override
@@ -157,6 +159,12 @@ public class ChatRoomAdapter extends RecyclerView.Adapter<ChatRoomAdapter.BaseAd
             }
 
             tvTime.setText(model.getTime());
+
+            if(model.getBitmap() != null){
+                ivContent.setImageBitmap(model.getBitmap());
+                ivContent.setVisibility(View.VISIBLE);
+                tvContent.setVisibility(View.GONE);
+            }
         }
     }
 
@@ -166,6 +174,7 @@ public class ChatRoomAdapter extends RecyclerView.Adapter<ChatRoomAdapter.BaseAd
         private TextView tvName;
         private ImageView ivSex;
         private TextView tvTime;
+        private ImageView ivContent;
 
         public ChatBViewHolder(View view) {
             super(view);
@@ -174,6 +183,7 @@ public class ChatRoomAdapter extends RecyclerView.Adapter<ChatRoomAdapter.BaseAd
             tvName = (TextView) itemView.findViewById(R.id.tv_bubble_user_name);
             ivSex = (ImageView) itemView.findViewById(R.id.iv_bubble_user_sex);
             tvTime = (TextView) itemView.findViewById(R.id.tv_bubble_user_time);
+            ivContent = (ImageView) itemView.findViewById(R.id.iv_bubble_content);
         }
 
         @Override
@@ -234,6 +244,12 @@ public class ChatRoomAdapter extends RecyclerView.Adapter<ChatRoomAdapter.BaseAd
                     break;
             }
             tvTime.setText(model.getTime());
+
+            if(model.getBitmap() != null){
+                ivContent.setImageBitmap(model.getBitmap());
+                ivContent.setVisibility(View.VISIBLE);
+                tvContent.setVisibility(View.GONE);
+            }
         }
     }
 
