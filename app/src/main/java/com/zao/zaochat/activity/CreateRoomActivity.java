@@ -66,11 +66,14 @@ public class CreateRoomActivity extends AppCompatActivity implements TextWatcher
     private SocketServer socketServer;
     private SocketUser socketUser;
 
+    public static CreateRoomActivity instance;
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_room);
 
+        instance=this;//在onCreate里面写
         mContext=this;
         initView();
         initData();

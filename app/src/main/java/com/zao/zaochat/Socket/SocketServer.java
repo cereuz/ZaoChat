@@ -352,12 +352,13 @@ public class SocketServer {
         for (Socket socket : socketClients) {
             try {
                 new SendFileToClient(socket, file).start();
-                Thread.sleep(ConstantC.TWO_THOUSAND);
+
                 Log.i(TAG, "给一个客户端发送了文件消息：" + MessageType.SERVER_FILE_SIGN + msg);
                 OutputStream outputStream = socket.getOutputStream();
                 outputStream.write((MessageType.SERVER_FILE_SIGN + msg + socketUser.toString() + "文件" + file.getName() + "已由服务器发送~").getBytes("utf-8"));
                 outputStream.flush();
                 //socket.shutdownOutput();
+
 
             } catch (Exception e) {
                 e.printStackTrace();

@@ -840,7 +840,14 @@ public class ChatRoomActivity extends AppCompatActivity implements SocketServer.
                 ToastUtil.showT(mContext, "再按一次返回键退出程序");
                 firstTime = System.currentTimeMillis();
             } else {
-
+                /**
+                 * 关闭 CreateRoomActivity
+                 */
+                if(CreateRoomActivity.instance!=null){//给一下判空
+                    CreateRoomActivity.instance.finish();//在其它的activity里面使用
+                }
+                wifiTools.closeHotSpot();
+                wifiTools.closeWifi();
                 finish();
                 return super.onKeyDown(keyCode, event);
             }
