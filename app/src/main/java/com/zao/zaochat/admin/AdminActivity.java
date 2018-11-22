@@ -137,7 +137,7 @@ public class AdminActivity extends BaseActivity
      * 初始化相关的参数
      */
     void initParameter() {
-        socketUser = new SocketUser(ConstantC.USER_DEFAULT_NAME, ConstantC.USER_DEFAULT_ILLUSTRATION, "man", "2", GenerateRandom.randomW());
+        socketUser = new SocketUser(ConstantC.USER_DEFAULT_NAME, ConstantC.USER_DEFAULT_ILLUSTRATION, "man", "2", GenerateRandom.randomW(),"");
 
         wifiTools = WifiTools.getInstance(this);
         socketClient = new SocketClient();

@@ -1,6 +1,5 @@
 package com.zao.zaochat.Socket;
 
-import android.graphics.BitmapFactory;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
@@ -57,7 +56,6 @@ public class SocketServer {
                 new ServerListener().run();
             }
         }.start();
-
     }
 
     /**
@@ -216,7 +214,7 @@ public class SocketServer {
             case MessageType.CLIENT_MESSAGE_SIGN:
                 mMsg = type + msg;
                 for (Socket socket : socketClients) {
-                    Log.i(TAG, "给一个客户端发送了消息：" + mMsg);
+                    LogUtil.i("给一个客户端发送了消息：" + mMsg);
                     try {
                         OutputStream outputStream = socket.getOutputStream();
                         outputStream.write(mMsg.getBytes("utf-8"));
@@ -253,7 +251,7 @@ public class SocketServer {
 
                 for (Socket socket : socketClients) {
                     try {
-                        Log.i(TAG, "给一个客户端发送了消息：" + mMsg);
+                        LogUtil.i("给一个客户端发送了消息：" + mMsg);
                         OutputStream outputStream = socket.getOutputStream();
                         outputStream.write(mMsg.getBytes("utf-8"));
                         outputStream.flush();
@@ -284,7 +282,7 @@ public class SocketServer {
                 mMsg = type + msg;
                 for (Socket socket : socketClients) {
                     try {
-                        Log.i(TAG, "给一个客户端发送了消息：" + mMsg);
+                        LogUtil.i("给一个客户端发送了消息：" + mMsg);
                         OutputStream outputStream = socket.getOutputStream();
                         outputStream.write(mMsg.getBytes("utf-8"));
                         outputStream.flush();
@@ -353,13 +351,14 @@ public class SocketServer {
         Log.i(TAG, "msg:" + msg);
         for (Socket socket : socketClients) {
             try {
+                new SendFileToClient(socket, file).start();
+                Thread.sleep(ConstantC.TWO_THOUSAND);
                 Log.i(TAG, "给一个客户端发送了文件消息：" + MessageType.SERVER_FILE_SIGN + msg);
                 OutputStream outputStream = socket.getOutputStream();
                 outputStream.write((MessageType.SERVER_FILE_SIGN + msg + socketUser.toString() + "文件" + file.getName() + "已由服务器发送~").getBytes("utf-8"));
                 outputStream.flush();
                 //socket.shutdownOutput();
 
-                new SendFileToClient(socket, file).start();
             } catch (Exception e) {
                 e.printStackTrace();
                 Log.i(TAG, "pipe broken??");
@@ -445,9 +444,9 @@ public class SocketServer {
 
                 Log.i(TAG, "已经发出");
                 if (mListener != null) {
-
+                    socketUser.setFile_name(file.getPath());
                     mListener.onSNotify(MessageType.SERVER_FILE_SIGN + socketUser.toString() + "文件：" + file.getName() + "已发送~");
-
+                    socketUser.setFile_name("");
                 } else {
                     Log.i(TAG, "已经发出通知出错");
                 }
@@ -551,9 +550,13 @@ public class SocketServer {
             String userSign = userData.substring(MessageType.MS_LEN, MessageType.MS_LEN + MessageType.ID_LEN);
             Log.i(TAG, "userSign：" + userSign);
 //            sendMessageToClient(userData.substring(MessageType.MS_LEN, userData.lastIndexOf("/") + 1) + "文件：" + file.getName() + "已被服务器接受~", MessageType.SERVER_FILE_RECEIVED_SIGN);
-            sendMessageToClient(userSign + socketUser.toString() + "文件：" + file.getName() + "已被服务器接受~", MessageType.SERVER_FILE_RECEIVED_SIGN);
 
-            mListener.onSNotify(userSign + MessageType.SERVER_FILE_SIGN + socketUser.toString() + "文件：" + file.getName() + "服务器已接受~");
+//            sendMessageToClient(userSign + socketUser.toString() + "文件：" + file.getName() + "已被服务器接受~", MessageType.SERVER_FILE_RECEIVED_SIGN);
+            LogUtil.e(userSign + socketUser.toString() + "文件：" + file.getName() + "已被服务器接受~" + MessageType.SERVER_FILE_RECEIVED_SIGN);
+
+//            mListener.onSNotify(userSign + MessageType.SERVER_FILE_SIGN + socketUser.toString() + "文件：" + file.getName() + "服务器已接受~");
+            LogUtil.e(userSign + MessageType.SERVER_FILE_SIGN + socketUser.toString() + "文件：" + file.getName() + "服务器已接受~");
+
 //            mListener.onSReceiveData("文件：" + file.getName() + "已接受~");
             Log.i(TAG, "已转发文件给客户端");
 //            sendMessageToClient(userData.split("/")[4] + "文件：" + file.getName() + "已转发~", MessageType.SERVER_MESSAGE_SIGN);

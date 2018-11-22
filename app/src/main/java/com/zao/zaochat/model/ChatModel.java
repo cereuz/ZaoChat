@@ -1,7 +1,5 @@
 package com.zao.zaochat.model;
 
-import android.graphics.Bitmap;
-
 import java.io.Serializable;
 
 /**
@@ -16,15 +14,7 @@ public class ChatModel implements Serializable {
     private String sex = "";
     private String time="";
     private String sign="";
-    private Bitmap bitmap = null;
-
-    public Bitmap getBitmap() {
-        return bitmap;
-    }
-
-    public void setBitmap(Bitmap bitmap) {
-        this.bitmap = bitmap;
-    }
+    private String file_path = "";
 
     public String getSign() {
         return sign;
@@ -92,6 +82,14 @@ public class ChatModel implements Serializable {
         this.type = type;
     }
 
+    public String getFile_path() {
+        return file_path;
+    }
+
+    public void setFile_path(String file_name) {
+        this.file_path = file_name;
+    }
+
     @Override
     public String toString() {
         return "ChatModel{" +
@@ -103,7 +101,7 @@ public class ChatModel implements Serializable {
                 ", sex='" + sex + '\'' +
                 ", time='" + time + '\'' +
                 ", sign='" + sign + '\'' +
-                ", bitmap=" + bitmap +
+                ", file_path='" + file_path + '\'' +
                 '}';
     }
 }

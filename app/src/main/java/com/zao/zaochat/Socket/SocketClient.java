@@ -6,7 +6,6 @@ import com.zao.zaochat.global.ConstantC;
 import com.zao.zaochat.global.MessageType;
 import com.zao.zaochat.object.SocketUser;
 import com.zao.zaochat.utils.LogUtil;
-import com.zao.zaochat.utils.ZaoUtils;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
@@ -205,7 +204,9 @@ public class SocketClient {
 
                 Log.i(TAG, "已经发出");
                 if (mListener != null) {
+                    socketUser.setFile_name(file.getPath());  //显示在自己这里的，直接赋值path就可以了
                     mListener.onNotify(MessageType.CLIENT_FILE_SIGN + socketUser.getSign() + socketUser.toString() + "文件：" + file.getName() + "已发送~");
+                    socketUser.setFile_name("");
 //                    sendMessageToServer(socketUser.toString() + "文件：" + file.getName() + "已发送~", MessageType.CLIENT_FILE_SIGN);
                 } else {
                     Log.i(TAG, "已经发出通知出错");
@@ -214,8 +215,6 @@ public class SocketClient {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-
-
         }
     }
 
@@ -287,12 +286,13 @@ public class SocketClient {
         fileOut.flush();
         fileOut.close();
 
-        if (mListener != null) {
+/*        if (mListener != null) {
             sendMessageToServer(socketUser.toString() + "文件：" + file.getName() + "已被客户端接受~", MessageType.CLIENT_MESSAGE_SIGN);
 //            mListener.onNotify(s+"文件：" + file.getName() + "已接受~");
         } else {
             Log.i(TAG, "已经发出通知出错");
-        }
+        }*/
+        LogUtil.e("已经直接发送文件，不需要显示通知消息");
 
     }
 
@@ -350,9 +350,9 @@ public class SocketClient {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        Log.i(TAG, "File Name:" + file.getName());
-        new SendFileToServer(socket, file).start();
 
+        LogUtil.e("File Name:" + file.getName() + "==" + socketUser.toString() + "文件：" + file.getName() + "客户端已发送~" +  MessageType.CLIENT_FILE_SIGN);
+        new SendFileToServer(socket, file).start();
     }
 
 

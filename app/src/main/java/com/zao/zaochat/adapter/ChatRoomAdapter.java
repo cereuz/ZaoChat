@@ -1,6 +1,8 @@
 package com.zao.zaochat.adapter;
 
+import android.graphics.BitmapFactory;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -8,9 +10,9 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.zao.zaochat.R;
+import com.zao.zaochat.global.ConstantC;
 import com.zao.zaochat.model.ChatModel;
 import com.zao.zaochat.model.ItemModel;
-import com.zao.zaochat.utils.LogUtil;
 
 import java.util.ArrayList;
 
@@ -160,8 +162,9 @@ public class ChatRoomAdapter extends RecyclerView.Adapter<ChatRoomAdapter.BaseAd
 
             tvTime.setText(model.getTime());
 
-            if(model.getBitmap() != null){
-                ivContent.setImageBitmap(model.getBitmap());
+            String file_path = model.getFile_path();
+            if(!TextUtils.isEmpty(file_path)){
+                ivContent.setImageBitmap(BitmapFactory.decodeFile(file_path));
                 ivContent.setVisibility(View.VISIBLE);
                 tvContent.setVisibility(View.GONE);
             }
@@ -245,8 +248,9 @@ public class ChatRoomAdapter extends RecyclerView.Adapter<ChatRoomAdapter.BaseAd
             }
             tvTime.setText(model.getTime());
 
-            if(model.getBitmap() != null){
-                ivContent.setImageBitmap(model.getBitmap());
+            String file_path = model.getFile_path();
+            if(!TextUtils.isEmpty(file_path)){
+                ivContent.setImageBitmap(BitmapFactory.decodeFile(file_path));
                 ivContent.setVisibility(View.VISIBLE);
                 tvContent.setVisibility(View.GONE);
             }

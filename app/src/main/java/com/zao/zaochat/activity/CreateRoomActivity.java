@@ -122,7 +122,7 @@ public class CreateRoomActivity extends AppCompatActivity implements TextWatcher
          */
         socketClient = new SocketClient();
         socketServer = new SocketServer();
-        socketUser = new SocketUser(ConstantC.USER_DEFAULT_NAME, ConstantC.USER_DEFAULT_ILLUSTRATION, "man", "NOICON", GenerateRandom.randomW());
+        socketUser = new SocketUser(ConstantC.USER_DEFAULT_NAME, ConstantC.USER_DEFAULT_ILLUSTRATION, "man", "NOICON", GenerateRandom.randomW(),"");
     }
 
 

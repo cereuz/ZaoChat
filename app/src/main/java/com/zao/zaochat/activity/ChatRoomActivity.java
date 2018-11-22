@@ -6,7 +6,6 @@ import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.BitmapFactory;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Build;
@@ -49,7 +48,6 @@ import com.zao.zaochat.object.SocketUser;
 import com.zao.zaochat.utils.ConstantValue;
 import com.zao.zaochat.utils.LogUtil;
 import com.zao.zaochat.utils.ScreenUtils;
-import com.zao.zaochat.utils.TextUse;
 import com.zao.zaochat.utils.ToastUtil;
 import com.zao.zaochat.utils.ZaoUtils;
 import com.zao.zaochat.widget.UserInfoDialog;
@@ -57,7 +55,6 @@ import com.zao.zaochat.widget.UserInfoDialog;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.List;
 
 import static com.zao.zaochat.global.GetFilePathByUri.getPathByUri4kitkat;
 
@@ -122,13 +119,6 @@ public class ChatRoomActivity extends AppCompatActivity implements SocketServer.
                     case ConstantC.SEND_MESSAGE_Z:
                         sendMessageZ();
                         break;
-                    case ConstantC.SEND_FILE_Z:
-                        File file = (File)msg.obj;
-                        try {
-                            socketServer.sendFile(socketUser.getSign() + "", file);
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
                     default:
                         break;
                 }
@@ -143,7 +133,7 @@ public class ChatRoomActivity extends AppCompatActivity implements SocketServer.
      */
     private void initParameter() {
         wifiTools = WifiTools.getInstance(mContext);
-        socketUser = new SocketUser(GenerateRandom.randomUSER_DEFAULT_NAME(), ConstantC.USER_DEFAULT_ILLUSTRATION, GenerateRandom.randomSex(), GenerateRandom.randomIcon(), GenerateRandom.randomW());
+        socketUser = new SocketUser(GenerateRandom.randomUSER_DEFAULT_NAME(), ConstantC.USER_DEFAULT_ILLUSTRATION, GenerateRandom.randomSex(), GenerateRandom.randomIcon(), GenerateRandom.randomW(),"");
 
         /**
          * 获取前面Activity传过来的值
@@ -397,13 +387,12 @@ public class ChatRoomActivity extends AppCompatActivity implements SocketServer.
                     ArrayList<ItemModel> data = new ArrayList<>();
                     ChatModel model = new ChatModel();
 
-
                     String userSign = msg.substring(0, MessageType.ID_LEN);
                     LogUtil.i("该消息由用户" + userSign + "发送");
 
-                    String[] infoMsg = msg.substring(MessageType.ID_LEN).split("/");
+                    String[] infoMsg = msg.substring(MessageType.ID_LEN).split(" ");
 
-                    String rMsg = infoMsg[5];
+                    String rMsg = infoMsg[6];
                     LogUtil.i("消息内容为" + rMsg);
 
 
@@ -412,6 +401,9 @@ public class ChatRoomActivity extends AppCompatActivity implements SocketServer.
                     model.setSex(infoMsg[2]);
                     model.setIcon(infoMsg[3]);
                     model.setSign(infoMsg[4]);
+                    if(!TextUtils.isEmpty(infoMsg[5])){
+                        model.setFile_path(ConstantC.ZAO_CHAT_PATH + infoMsg[5]);
+                    }
                     model.setTime(ZaoUtils.getSystemTimeMore(3));
                     model.setType(MessageType.SERVER_MESSAGE_RECEIVED_SIGN);
                     model.setContent(rMsg);
@@ -440,15 +432,16 @@ public class ChatRoomActivity extends AppCompatActivity implements SocketServer.
                     ArrayList<ItemModel> data = new ArrayList<>();
                     ChatModel model = new ChatModel();
 
-                    String[] infoMsg = msg.substring(MessageType.MS_LEN).split("/");
-                    String rMsg = infoMsg[5];
-                    LogUtil.i("消息内容为" + rMsg);
-
+                    String[] infoMsg = msg.substring(MessageType.MS_LEN).split(" ");
+                    String rMsg = infoMsg[6];
+                    LogUtil.e("消息内容为" + rMsg + socketUser.getFile_name());
                     model.setIcon(socketUser.getIcon());
                     model.setNick(socketUser.getUserName());
                     model.setIllustration(socketUser.getUserIllustration());
                     model.setSex(socketUser.getIsMan());
                     model.setSign(socketUser.getSign() + "");
+                    model.setFile_path(infoMsg[5]);
+                    LogUtil.e("文件路径 ：" + infoMsg[5]);
                     model.setType(MessageType.SERVER_MESSAGE_SEND_SIGN);
                     model.setTime(ZaoUtils.getSystemTimeMore(3));
                     model.setContent(rMsg);
@@ -494,8 +487,8 @@ public class ChatRoomActivity extends AppCompatActivity implements SocketServer.
                                 ArrayList<ItemModel> data = new ArrayList<>();
                                 ChatModel model = new ChatModel();
 
-                                String[] infoMsg = msg.substring(MessageType.ID_LEN).split("/");
-                                String rMsg = infoMsg[5];
+                                String[] infoMsg = msg.substring(MessageType.ID_LEN).split(" ");
+                                String rMsg = infoMsg[6];
                                 LogUtil.i( "消息内容为" + rMsg);
                                 LogUtil.e("CLIENT_MESSAGE_SIGN : " + infoMsg[0] + infoMsg[1] + infoMsg[2] + infoMsg[3] + infoMsg[4] + infoMsg[5] );
 
@@ -504,6 +497,9 @@ public class ChatRoomActivity extends AppCompatActivity implements SocketServer.
                                 model.setSex(infoMsg[2]);
                                 model.setIcon(infoMsg[3]);
                                 model.setSign(infoMsg[4]);
+                                if(!TextUtils.isEmpty(infoMsg[5])){
+                                    model.setFile_path(ConstantC.ZAO_CHAT_PATH + infoMsg[5]);
+                                }
                                 model.setContent(rMsg);
                                 model.setType(MessageType.CLIENT_MESSAGE_RECEIVED_SIGN);
                                 model.setTime(ZaoUtils.getSystemTimeMore(3));
@@ -524,8 +520,8 @@ public class ChatRoomActivity extends AppCompatActivity implements SocketServer.
                             ArrayList<ItemModel> data = new ArrayList<>();
                             ChatModel model = new ChatModel();
 
-                            String[] infoMsg = msg.substring(MessageType.MS_LEN).split("/");
-                            String rMsg = infoMsg[5];
+                            String[] infoMsg = msg.substring(MessageType.MS_LEN).split(" ");
+                            String rMsg = infoMsg[6];
                             LogUtil.i( "消息内容为" + rMsg);
                             LogUtil.e("CLIENT_SIGN : " + infoMsg[0] + infoMsg[1] + infoMsg[2] + infoMsg[3] + infoMsg[4] + infoMsg[5] );
                             model.setNick(infoMsg[0]);
@@ -533,6 +529,9 @@ public class ChatRoomActivity extends AppCompatActivity implements SocketServer.
                             model.setSex(infoMsg[2]);
                             model.setIcon(infoMsg[3]);
                             model.setSign(infoMsg[4]);
+                            if(!TextUtils.isEmpty(infoMsg[5])){
+                                model.setFile_path(ConstantC.ZAO_CHAT_PATH + infoMsg[5]);
+                            }
                             model.setType(MessageType.SERVER_MESSAGE_RECEIVED_SIGN);
                             model.setTime(ZaoUtils.getSystemTimeMore(3));
                             model.setContent(rMsg);
@@ -557,8 +556,8 @@ public class ChatRoomActivity extends AppCompatActivity implements SocketServer.
                                 ArrayList<ItemModel> data = new ArrayList<>();
                                 ChatModel model = new ChatModel();
 
-                                String[] infoMsg = msg.substring(MessageType.ID_LEN).split("/");
-                                String rMsg = infoMsg[5];
+                                String[] infoMsg = msg.substring(MessageType.ID_LEN).split(" ");
+                                String rMsg = infoMsg[6];
                                 LogUtil.i( "消息内容为" + rMsg);
 
                                 model.setNick(infoMsg[0]);
@@ -566,6 +565,9 @@ public class ChatRoomActivity extends AppCompatActivity implements SocketServer.
                                 model.setSex(infoMsg[2]);
                                 model.setIcon(infoMsg[3]);
                                 model.setSign(infoMsg[4]);
+                                if(!TextUtils.isEmpty(infoMsg[5])){
+                                    model.setFile_path(ConstantC.ZAO_CHAT_PATH + infoMsg[5]);
+                                }
                                 model.setType(MessageType.SERVER_FILE_RECEIVED_SIGN);
                                 model.setTime(ZaoUtils.getSystemTimeMore(3));
                                 model.setContent(rMsg);
@@ -605,15 +607,16 @@ public class ChatRoomActivity extends AppCompatActivity implements SocketServer.
                     ArrayList<ItemModel> data = new ArrayList<>();
                     ChatModel model = new ChatModel();
 
-                    String[] infoMsg = msg.substring(MessageType.MS_LEN + MessageType.ID_LEN).split("/");
-                    String rMsg = infoMsg[5];
-                    LogUtil.e("消息内容为 ：" + rMsg);
+                    String[] infoMsg = msg.substring(MessageType.MS_LEN + MessageType.ID_LEN).split(" ");
+                    String rMsg = infoMsg[6];
+                    LogUtil.e("消息内容为" + rMsg + socketUser.getFile_name());
 
                     model.setIcon(socketUser.getIcon());
                     model.setNick(socketUser.getUserName());
                     model.setIllustration(socketUser.getUserIllustration());
                     model.setSex(socketUser.getIsMan());
                     model.setSign(socketUser.getSign() + "");
+                    model.setFile_path(infoMsg[5]);
                     model.setType(MessageType.CLIENT_FILE_SEND_SIGN);
                     model.setTime(ZaoUtils.getSystemTimeMore(3));
                     model.setContent(rMsg);
@@ -635,17 +638,29 @@ public class ChatRoomActivity extends AppCompatActivity implements SocketServer.
                 if (resultCode == Activity.RESULT_OK) {
 
                     Uri uri = data.getData();  //得到uri，后面将uri转化成file的过程
-                    File file = new File(getPathByUri4kitkat(mContext, uri));
+                    final File file = new File(getPathByUri4kitkat(mContext, uri));
 //                    Toast.makeText(getActivity(), file.toString(), Toast.LENGTH_SHORT).show();
                     if (file.length() > 5242880) {
                         ToastUtil.showT(mContext, "文件大小不得大于5MB!");
                         break;
                     }
-                        Message msg = Message.obtain();
+/*                        Message msg = Message.obtain();
                         msg.what = ConstantC.SEND_FILE_Z;
                         msg.obj = file;
-                        mHandler.sendMessage(msg);
-//                     socketServer.sendFile(socketUser.getSign() + "", file);
+                        mHandler.sendMessage(msg);*/
+                        new Thread() {
+                            @Override
+                            public void run() {
+                                super.run();
+                                try {
+                                    socketUser.setFile_name(file.getName());
+                                    socketServer.sendFile(socketUser.getSign() + "",file);
+                                    socketUser.setFile_name("");
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                        }.start();
 
                 } else {
                     LogUtil.e("file_pick_error");
@@ -825,7 +840,8 @@ public class ChatRoomActivity extends AppCompatActivity implements SocketServer.
                 ToastUtil.showT(mContext, "再按一次返回键退出程序");
                 firstTime = System.currentTimeMillis();
             } else {
-//                finish();
+
+                finish();
                 return super.onKeyDown(keyCode, event);
             }
             return true;

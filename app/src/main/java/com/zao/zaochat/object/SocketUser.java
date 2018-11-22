@@ -17,13 +17,15 @@ public class SocketUser {
     private String icon;
     private String time;
     private int sign;
+    private String file_name;
 
-    public SocketUser(String userName, String userIllustration, String isMan, String icon, int sign) {
+    public SocketUser(String userName, String userIllustration, String isMan, String icon, int sign, String file_name) {
         this.userName = userName;
         this.userIllustration = userIllustration;
         this.isMan = isMan;
         this.icon = icon;
         this.sign = sign;
+        this.file_name = file_name;
     }
 
     public String getUserName() {
@@ -50,9 +52,17 @@ public class SocketUser {
         this.sign = sign;
     }
 
+    public String getFile_name() {
+        return file_name;
+    }
+
+    public void setFile_name(String file_name) {
+        this.file_name = file_name;
+    }
+
     @Override
     public String toString() {
-        String str = userName + "/" + userIllustration + "/" + isMan + "/" + icon + "/" + sign + "/";
+        String str = userName + " " + userIllustration + " " + isMan + " " + icon + " " + sign + " " + file_name + " ";
         return str;
     }
 
