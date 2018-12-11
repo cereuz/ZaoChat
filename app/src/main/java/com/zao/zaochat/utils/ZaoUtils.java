@@ -8,6 +8,8 @@ import android.os.StatFs;
 import android.text.format.Formatter;
 import android.util.Log;
 
+import com.zao.zaochat.znote.NotesDao;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
@@ -98,7 +100,7 @@ public class ZaoUtils {
     }
 
 
-    public static String getSystemTimeMore(int i,long time){
+    public static String getSystemTimeMore(int i,Long time){
         SimpleDateFormat mFormat = null;
         Date date = new Date(time);
         switch (i) {
@@ -146,6 +148,14 @@ public class ZaoUtils {
                 date.setHours(0);
                 date.setMinutes(0);
                 date.setSeconds(0);
+                Log.e("CurTime", "time4=" + mFormat.format(date));
+                break;
+            case 11:
+                mFormat = new SimpleDateFormat("HH:mm");
+                Log.e("CurTime", "time4=" + mFormat.format(date));
+                break;
+            case 12:
+                mFormat = new SimpleDateFormat("MM-dd");
                 Log.e("CurTime", "time4=" + mFormat.format(date));
                 break;
         }
@@ -344,6 +354,73 @@ public class ZaoUtils {
                 Log.e(ConstantValue.TAG, "文件 ：" + file);
             }
         }
+    }
+
+
+
+    public static void addNotesData(final Context context){
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                NotesDao mDao = NotesDao.getInstance(context);
+                for(int i = 0 ; i < 5 ; i++){
+                    String title;
+                    String author ;
+                    String content;
+                    String note;
+                    String picpath;
+                    String email ;
+                    String mode ;
+                    Long time;
+                    if(i < 600){
+                        //String name,String mode,String time,String notes
+                        note = ZaoUtils.getSystemTimeMore(3) + ConstantValue.XIAO_YAO_YOU ;
+                        author = "蜗牛" + i;
+                        picpath = "https://img3.doubanio.com/view/photo/l/public/p2294662303.webp";
+                        email = "sune"+ i +"do@qq.com" ;
+                        mode = (i % 4) + "";
+                        time = System.currentTimeMillis();
+                        //往数据库插入数据
+                        mDao.insert(author,mode,time,note);
+                        ZaoUtils.sleep(20);
+                    }  else if(i < 20000){
+                        note = ZaoUtils.getSystemTimeMore(3) + ConstantValue.XIAO_YAO_YOU ;
+                        author = "蜗牛" + i;
+                        picpath = "https://img3.doubanio.com/view/photo/l/public/p2294662303.webp";
+                        email = "sune"+ i +"do@qq.com" ;
+                        mode = (i % 4) + "";
+                        time = System.currentTimeMillis();
+                        //往数据库插入数据
+                        mDao.insert(author,mode,time,note);
+                        //睡眠，
+                        ZaoUtils.sleep(20);
+                    }  else if (i < 300000){
+                        note = ZaoUtils.getSystemTimeMore(3) + ConstantValue.XIAO_YAO_YOU ;
+                        author = "蜗牛" + i;
+                        picpath = "https://img3.doubanio.com/view/photo/l/public/p2294662303.webp";
+                        email = "sune"+ i +"do@qq.com" ;
+                        mode = (i % 4) + "";
+                        time = System.currentTimeMillis();
+                        //往数据库插入数据
+                        mDao.insert(author,mode,time,note);
+                        ZaoUtils.sleep(10);
+                    }
+                }
+
+                //黑名单的数据库
+                ZaoUtils.copyDBtoSD(context);
+            }
+        }).start();
+
+    }
+
+
+
+    //从数据库文件夹复制文件到SD卡
+    public static void copyDBtoSD(Context context) {
+        //黑名单的数据库
+        String pathDB = context.getDatabasePath(ConstantValue.DADABASE_NOTES).getAbsolutePath();
+        ZaoUtils.copyFile(pathDB, ZaoUtils.pathSD + "/ame/ZNotes.db");
     }
 }
 

@@ -15,6 +15,7 @@ public class ConstantC {
 
     public final static int WIFI_LIST_OPEN_REFRESHED = 12344;
     public final static int WIFI_LIST_REFRESHED = 12345;
+    public final static int NOTE_LIST_REFRESHED = 12345;
     public final static int WIFI_LIST_INIT = 12346;
 
     public final static int CLIENT_PREPARE = 12347;

@@ -125,9 +125,9 @@ public class WifiListFragmentAdapter extends RecyclerView.Adapter<WifiListFragme
 
         public MyViewHolder(View view) {
             super(view);
-            tvName = (TextView) view.findViewById(R.id.tv_name);
-            tvConnect = (TextView) view.findViewById(R.id.tv_connect);
-            ivIcon = (ImageView) view.findViewById(R.id.iv_icon);
+            tvName = (TextView) view.findViewById(R.id.tv_wifi_name);
+            tvConnect = (TextView) view.findViewById(R.id.btn_wifi_name);
+            ivIcon = (ImageView) view.findViewById(R.id.iv_wifi_icon);
             ivLock = (ImageView) view.findViewById(R.id.iv_wifi_item_lock);
         }
 

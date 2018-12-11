@@ -22,7 +22,7 @@
             android:layout_height="match_parent">
 
             <TextView
-                android:id="@+id/tv_name"
+                android:id="@+id/tv_wifi_name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerHorizontal="true"
@@ -37,7 +37,7 @@
                 android:textSize="16dp" />
 
             <ImageView
-                android:id="@+id/iv_icon"
+                android:id="@+id/iv_wifi_icon"
                 android:layout_width="48dp"
                 android:layout_height="48dp"
                 android:layout_alignParentStart="true"
@@ -47,11 +47,11 @@
                 android:src="@drawable/wifi_yellow2" />
 
             <Button
-                android:id="@+id/tv_connect"
+                android:id="@+id/btn_wifi_name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentEnd="true"
-                android:layout_alignTop="@+id/iv_icon"
+                android:layout_alignTop="@+id/iv_wifi_icon"
                 android:background="@android:color/transparent"
                 android:foreground="?attr/selectableItemBackground"
                 android:text="@string/connect"
@@ -63,7 +63,7 @@
                 android:layout_height="16dp"
                 android:src="@drawable/lock"
                 android:layout_centerVertical="true"
-                android:layout_alignStart="@+id/tv_connect"
+                android:layout_alignStart="@+id/btn_wifi_name"
                 android:layout_marginStart="13dp" />
 
         </RelativeLayout>

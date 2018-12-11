@@ -243,7 +243,6 @@ public class AdminActivity extends BaseActivity
     private void showFile() {
             File file = new File(ConstantC.ZAO_CHAT_PATH);
 
-
             if(null==file || !file.exists()){
                 LogUtil.i("没有接收到任何文件。");
                 return;

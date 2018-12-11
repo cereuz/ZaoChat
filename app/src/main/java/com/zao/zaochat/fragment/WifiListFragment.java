@@ -338,7 +338,6 @@ public class WifiListFragment extends Fragment implements View.OnClickListener {
                     srlWifiList.setRefreshing(false);
                     Log.i(TAG, "没有位置权限");
                 }
-
             }
         });
 
@@ -387,7 +386,6 @@ public class WifiListFragment extends Fragment implements View.OnClickListener {
                 Message msg = new Message();
                 msg.what = ConstantC.WIFI_LIST_REFRESHED;
                 mHandler.sendMessage(msg);
-
 
             } catch (Exception e) {
                 e.printStackTrace();

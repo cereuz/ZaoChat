@@ -5,11 +5,14 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.view.MenuItem;
+import android.widget.Toast;
+
 import com.zao.zaochat.R;
 import com.zao.zaochat.activity.CreateRoomActivity;
 import com.zao.zaochat.activity.FileActivity;
 import com.zao.zaochat.utils.LogUtil;
 import com.zao.zaochat.utils.ToastUtil;
+import com.zao.zaochat.utils.ZaoUtils;
 
 /**
  * Created by Administrator on 2018/4/2 0002.
@@ -32,8 +35,10 @@ public class AdminUtils {
  			Intent  intent  =  new Intent(context,FileActivity.class);
  			context.startActivity(intent);
             return true;
-        } else  if (id == R.id.action_query) {
-            LogUtil.i("查询。。。");
+        } else  if (id == R.id.action_diary) {
+            LogUtil.i("日记。。。");
+            Toast.makeText(context, "自动添加测试数据", Toast.LENGTH_SHORT).show();
+            ZaoUtils.addNotesData(context);
 /* 			Intent  intent  =  new Intent(context,TestMeActivity.class);
  			context.startActivity(intent);*/
             return true;
